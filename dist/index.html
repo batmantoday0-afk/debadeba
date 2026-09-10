@@ -3,46 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>debadeba.in</title>
-  <meta name="description" content="DEBA DEBA" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚫</text></svg>" />
-  <script type="module" crossorigin src="/assets/index-D5_Uo_VF.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-Dg5-caXP.css">
+  <title>debadeba.in — Sassy Noir Edition</title>
+  <meta name="description" content="DEBBA DEBBA — The hypersonic aesthetic void." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚫</text></svg>" />
+  <script type="module" crossorigin src="/assets/index-CSd4Km5v.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BinHpJZH.css">
 </head>
-<body>
+<body data-theme="obsidian">
+  <!-- 3D WebGL Canvas -->
   <div id="canvas-container"></div>
 
-  <!-- Discreet Audio Toggle -->
-  <button id="audio-toggle" class="audio-toggle" title="Toggle Music (Jump Cut Flip)">
-    <span id="audio-icon">🎵</span>
-  </button>
+  <!-- Fluid Light Particle Trails Canvas -->
+  <canvas id="fluid-canvas"></canvas>
+
+  <!-- Top Centered Sassy Whispers Toast HUD -->
+  <div id="sassy-banner" class="sassy-banner">
+    <span class="sassy-dot"></span>
+    <span id="sassy-text" class="sassy-text">Welcome! Try not to stare, it's rude.</span>
+  </div>
+
+  <!-- Floating Luxury Action Controls -->
+  <div class="action-dock">
+    <!-- 🕵️ Suspicious Pixel (Secret Mission Entry) -->
+    <button id="suspicious-pixel" class="control-btn suspicious-pixel" title="Definitely Not Important" aria-label="Definitely Not Important">
+      <span class="pixel-dot"></span>
+      <span class="pixel-label">Definitely Not Important</span>
+    </button>
+
+    <!-- Mood Palette Toggle -->
+    <button id="mood-toggle" class="control-btn mood-toggle" title="Switch Aesthetic Mood (or press M)">
+      <span id="mood-icon">🌑</span>
+      <span class="mood-badge" id="mood-badge">Void</span>
+    </button>
+
+    <!-- Discreet Audio Toggle -->
+    <button id="audio-toggle" class="control-btn audio-toggle" title="Toggle Soundtrack (Jump Cut Flip)">
+      <span id="audio-icon">🎵</span>
+    </button>
+  </div>
+
+  <!-- Mood Palette Selector Menu -->
+  <div id="mood-menu" class="mood-menu hidden">
+    <div class="mood-option active" data-mood="obsidian">
+      <span class="mood-swatch swatch-obsidian"></span>
+      <div class="mood-info">
+        <span class="mood-title">Obsidian Void</span>
+        <span class="mood-sub">Monochrome luxury & chrome</span>
+      </div>
+    </div>
+    <div class="mood-option" data-mood="crimson">
+      <span class="mood-swatch swatch-crimson"></span>
+      <div class="mood-info">
+        <span class="mood-title">Crimson Velvet</span>
+        <span class="mood-sub">Sultry wine & seductive ruby</span>
+      </div>
+    </div>
+    <div class="mood-option" data-mood="cyber">
+      <span class="mood-swatch swatch-cyber"></span>
+      <div class="mood-info">
+        <span class="mood-title">Cyber Amour</span>
+        <span class="mood-sub">Ultraviolet & electric magenta</span>
+      </div>
+    </div>
+    <div class="mood-option" data-mood="gold">
+      <span class="mood-swatch swatch-gold"></span>
+      <div class="mood-info">
+        <span class="mood-title">Liquid Gold</span>
+        <span class="mood-sub">Warm champagne & golden embers</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Discreet Secret Corner Trigger -->
-  <button id="secret-trigger" class="secret-trigger" title="Deba Easter Egg">✨</button>
+  <button id="secret-trigger" class="secret-trigger" title="Debba Easter Egg">✨</button>
+
+  <!-- ==========================================================
+       OFFICE ROAST: SECRET MISSION SYSTEM
+       ========================================================== -->
+  <div id="mission-overlay" class="mission-overlay hidden">
+    <div class="mission-backdrop"></div>
+    <div class="mission-container">
+      <!-- Mission Top HUD -->
+      <div class="mission-hud">
+        <div class="mission-badge">
+          <span class="mission-badge-icon">🕵️</span>
+          <span class="mission-badge-text">OFFICE ROAST • SECRET MISSION</span>
+        </div>
+        <button id="mission-close-btn" class="mission-close-btn" title="Abort Mission">✕</button>
+      </div>
+
+      <!-- Active Stage Viewport -->
+      <div id="mission-stage-box" class="mission-stage-box">
+        <!-- Stages will be dynamically mounted or switched via JS -->
+      </div>
+    </div>
+  </div>
 
   <!-- Secret Credits Overlay -->
   <div id="credits-overlay" class="credits-overlay hidden">
     <div class="credits-card">
       <div class="founder-box">
         <span class="founder-tag">FOUNDER • CREATOR • MAKER</span>
-        <h1 class="founder-name" data-photo="/team/sathwik.jpg">Sathwik</h1>
+        <h1 class="founder-name" data-photo="/team/sathwik.jpeg" data-member="sathwik">Sathwik</h1>
       </div>
 
       <div class="credits-divider"></div>
 
       <div class="team-box">
-        <h2 class="team-heading">TEAM DEBA DEBA</h2>
+        <h2 class="team-heading">TEAM DEBBA DEBBA</h2>
         <div class="team-grid">
-          <div class="team-item" style="--delay: 0.1s;" data-photo="/team/sathesh.jpg"><span class="team-num">01</span><span class="team-name">Sathesh kumar</span></div>
-          <div class="team-item" style="--delay: 0.15s;" data-photo="/team/vamsi.jpg"><span class="team-num">02</span><span class="team-name">Vamsi</span></div>
-          <div class="team-item" style="--delay: 0.2s;" data-photo="/team/amrutha.jpg"><span class="team-num">03</span><span class="team-name">Ashwini</span></div>
-          <div class="team-item" style="--delay: 0.25s;" data-photo="/team/viswanath.jpg"><span class="team-num">04</span><span class="team-name">viswanath</span></div>
-          <div class="team-item" style="--delay: 0.3s;" data-photo="/team/bindu.jpg"><span class="team-num">05</span><span class="team-name">steel Binde</span></div>
-          <div class="team-item" style="--delay: 0.35s;" data-photo="/team/aakash.jpg"><span class="team-num">06</span><span class="team-name">Aakash</span></div>
-          <div class="team-item" style="--delay: 0.4s;" data-photo="/team/harshith.jpg"><span class="team-num">07</span><span class="team-name">harshith</span></div>
-          <div class="team-item" style="--delay: 0.45s;" data-photo="/team/harshitha.jpg"><span class="team-num">08</span><span class="team-name">Harshitha</span></div>
-          <div class="team-item" style="--delay: 0.5s;" data-photo="/team/munisankar.jpg"><span class="team-num">09</span><span class="team-name">Muni sankar</span></div>
-          <div class="team-item" style="--delay: 0.55s;" data-photo="/team/hemasri.jpg"><span class="team-num">10</span><span class="team-name">Hema sri</span></div>
+          <div class="team-item" style="--delay: 0.1s;" data-photo="/team/sathesh.png" data-member="sathesh"><span class="team-num">01</span><span class="team-name">Sathesh kumar</span></div>
+          <div class="team-item" style="--delay: 0.15s;" data-photo="/team/vamsi.jpeg" data-member="vamsi"><span class="team-num">02</span><span class="team-name">Vamsi</span></div>
+          <div class="team-item" style="--delay: 0.2s;" data-photo="/team/ashwini.jpeg" data-member="ashwini"><span class="team-num">03</span><span class="team-name">Ashwini</span></div>
+          <div class="team-item" style="--delay: 0.25s;" data-photo="/team/viswanath.jpeg" data-member="viswanath"><span class="team-num">04</span><span class="team-name">viswanath</span></div>
+          <div class="team-item" style="--delay: 0.3s;" data-photo="/team/steelbinde.jpeg" data-member="steelbinde"><span class="team-num">05</span><span class="team-name">steel Binde</span></div>
+          <div class="team-item" style="--delay: 0.35s;" data-photo="/team/aakash.jpeg" data-member="aakash"><span class="team-num">06</span><span class="team-name">Aakash</span></div>
+          <div class="team-item" style="--delay: 0.4s;" data-photo="/team/harshith.jpeg" data-member="harshith"><span class="team-num">07</span><span class="team-name">harshith</span></div>
+          <div class="team-item" style="--delay: 0.45s;" data-photo="/team/harshitha.jpeg" data-member="harshitha"><span class="team-num">08</span><span class="team-name">Harshitha</span></div>
+          <div class="team-item" style="--delay: 0.5s;" data-photo="/team/munisankar.jpeg" data-member="munisankar"><span class="team-num">09</span><span class="team-name">Muni sankar</span></div>
+          <div class="team-item" style="--delay: 0.55s;" data-photo="/team/hemasri.jpeg" data-member="hemasri"><span class="team-num">10</span><span class="team-name">Hema sri</span></div>
         </div>
       </div>
 
@@ -52,26 +131,20 @@
     </div>
   </div>
 
-  <!-- Floating Photo Popup -->
+  <!-- Seductive & Sarcastic Team Bio Card Popup -->
   <div id="photo-popup" class="photo-popup">
-    <img id="photo-popup-img" src="" alt="Team member" />
-    <span id="photo-popup-name" class="photo-popup-name"></span>
-  </div>
-
-  <!-- Team Member Photo Modal Window -->
-  <div id="photo-modal" class="photo-modal hidden">
-    <div id="photo-modal-backdrop" class="photo-modal-backdrop"></div>
-    <div class="photo-modal-card">
-      <button id="photo-modal-close" class="photo-modal-close" title="Close Window">&times;</button>
-      <div class="photo-modal-img-wrapper">
-        <img id="photo-modal-img" src="" alt="Team Member Photo" />
+    <div class="photo-card-glass">
+      <div class="photo-avatar-wrapper">
+        <img id="photo-popup-img" src="" alt="Team member" />
+        <span class="photo-pulse-ring"></span>
       </div>
-      <div class="photo-modal-info">
-        <h3 id="photo-modal-name" class="photo-modal-name">Member Name</h3>
-        <span id="photo-modal-role" class="photo-modal-role">TEAM DEBA DEBA</span>
+      <div class="photo-popup-info">
+        <div class="photo-popup-name" id="photo-popup-name">Member Name</div>
+        <div class="photo-popup-role" id="photo-popup-role">Sarcastic Persona</div>
+        <div class="photo-popup-roast" id="photo-popup-roast">"Witty roast goes here."</div>
       </div>
     </div>
   </div>
-
+
 </body>
 </html>
