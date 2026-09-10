@@ -2584,7 +2584,22 @@ window.openPhotoModal = function(target) {
   const nameText = target.querySelector('.team-name')?.innerText || target.innerText || 'Team Member';
   const numText = target.querySelector('.team-num')?.innerText;
 
-  if (photoModalImg) photoModalImg.src = photoSrc;
+  if (photoModalImg) {
+    photoModalImg.triedPhotos = false;
+    photoModalImg.triedImages = false;
+    photoModalImg.src = photoSrc;
+    photoModalImg.onerror = function() {
+      const filename = photoSrc.split('/').pop();
+      if (!this.triedPhotos) {
+        this.triedPhotos = true;
+        this.src = '/photos/' + filename;
+      } else if (!this.triedImages) {
+        this.triedImages = true;
+        this.src = '/images/' + filename;
+      }
+    };
+  }
+
   if (photoModalName) photoModalName.innerText = nameText.trim();
 
   if (photoModalRole) {
@@ -2604,6 +2619,12 @@ window.closePhotoModal = function() {
     photoModal.classList.add('hidden');
   }
 };
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    window.closePhotoModal();
+  }
+});
 
 // Start Deba Deba Engine
 init();
