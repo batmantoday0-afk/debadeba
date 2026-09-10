@@ -602,82 +602,66 @@ function onWindowResize() {
   adjustScale();
 }
 
-// Press-to-Reveal Photo Popup System
+// Team Member Photo Modal Window System
 function setupPhotoReveal() {
-  const popup = document.getElementById('photo-popup');
-  const popupImg = document.getElementById('photo-popup-img');
-  if (!popup || !popupImg) return;
+  const photoModal = document.getElementById('photo-modal');
+  const photoModalImg = document.getElementById('photo-modal-img');
+  const photoModalName = document.getElementById('photo-modal-name');
+  const photoModalRole = document.getElementById('photo-modal-role');
+  const photoModalClose = document.getElementById('photo-modal-close');
+  const photoModalBackdrop = document.getElementById('photo-modal-backdrop');
 
-  let activeTarget = null;
-
-  function showPhoto(e) {
-    const target = e.target.closest('[data-photo]');
-    if (!target) return;
+  function openModal(target) {
+    if (!target || !target.dataset.photo || !photoModal) return;
 
     const photoSrc = target.dataset.photo;
-    if (!photoSrc) return;
+    const nameText = target.querySelector('.team-name')?.innerText || target.innerText || 'Team Member';
+    const numText = target.querySelector('.team-num')?.innerText;
 
-    e.preventDefault();
-    e.stopPropagation();
+    if (photoModalImg) photoModalImg.src = photoSrc;
+    if (photoModalName) photoModalName.innerText = nameText.trim();
 
-    const alreadyVisible = popup.classList.contains('visible');
-    activeTarget = target;
-    popupImg.src = photoSrc;
-
-    // Position the popup next to the pressed element
-    const rect = target.getBoundingClientRect();
-    const popupSize = 106; // 100px + 6px border
-    const gap = 12;
-
-    // Try to place above the element, centered horizontally
-    let left = rect.left + rect.width / 2 - popupSize / 2;
-    let top = rect.top - popupSize - gap;
-
-    // If it goes off the top, place below
-    if (top < 8) {
-      top = rect.bottom + gap;
+    if (photoModalRole) {
+      if (numText) {
+        photoModalRole.innerText = `TEAM DEBA DEBA • MEMBER ${numText}`;
+      } else {
+        photoModalRole.innerText = 'FOUNDER • CREATOR • MAKER';
+      }
     }
 
-    // Clamp to viewport horizontally
-    left = Math.max(8, Math.min(left, window.innerWidth - popupSize - 8));
+    photoModal.classList.remove('hidden');
+  }
 
-    // Clamp to viewport vertically
-    if (top + popupSize > window.innerHeight - 8) {
-      top = rect.top - popupSize - gap;
-    }
-
-    // If already showing a photo, move instantly without animation
-    if (alreadyVisible) {
-      popup.style.transition = 'none';
-    }
-
-    popup.style.left = left + 'px';
-    popup.style.top = top + 'px';
-    popup.classList.add('visible');
-
-    // Restore transition after instant reposition
-    if (alreadyVisible) {
-      void popup.offsetWidth; // force reflow
-      popup.style.transition = '';
+  function closeModal() {
+    if (photoModal) {
+      photoModal.classList.add('hidden');
     }
   }
 
-  function hidePhoto() {
-    popup.classList.remove('visible');
-    activeTarget = null;
-  }
-
-  // Attach to the credits overlay so it only works when credits are visible
   const creditsOverlay = document.getElementById('credits-overlay');
-  if (!creditsOverlay) return;
+  if (creditsOverlay) {
+    creditsOverlay.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-photo]');
+      if (target) {
+        e.stopPropagation();
+        openModal(target);
+      }
+    });
+  }
 
-  creditsOverlay.addEventListener('pointerdown', showPhoto);
-  creditsOverlay.addEventListener('pointerup', hidePhoto);
-  creditsOverlay.addEventListener('pointercancel', hidePhoto);
-  creditsOverlay.addEventListener('pointerleave', hidePhoto);
+  if (photoModalClose) photoModalClose.addEventListener('click', closeModal);
+  if (photoModalBackdrop) photoModalBackdrop.addEventListener('click', closeModal);
 
-  // Also hide on touch move (finger dragged away)
-  creditsOverlay.addEventListener('touchend', hidePhoto);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && photoModal && !photoModal.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  const returnBtn = document.getElementById('btn-return');
+  if (returnBtn) {
+    returnBtn.addEventListener('click', closeModal);
+  }
 }
 
 // Start

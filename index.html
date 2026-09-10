@@ -24,7 +24,7 @@
     <div class="credits-card">
       <div class="founder-box">
         <span class="founder-tag">FOUNDER • CREATOR • MAKER</span>
-        <h1 class="founder-name" data-photo="/team/sathwik.jpeg">Sathwik</h1>
+        <h1 class="founder-name" data-photo="/team/sathwik.jpg">Sathwik</h1>
       </div>
 
       <div class="credits-divider"></div>
@@ -32,16 +32,16 @@
       <div class="team-box">
         <h2 class="team-heading">TEAM DEBA DEBA</h2>
         <div class="team-grid">
-          <div class="team-item" style="--delay: 0.1s;" data-photo="/team/sathesh.png"><span class="team-num">01</span><span class="team-name">Sathesh kumar</span></div>
-          <div class="team-item" style="--delay: 0.15s;" data-photo="/team/vamsi.jpeg"><span class="team-num">02</span><span class="team-name">Vamsi</span></div>
-          <div class="team-item" style="--delay: 0.2s;" data-photo="/team/ashwini.jpeg"><span class="team-num">03</span><span class="team-name">Ashwini</span></div>
-          <div class="team-item" style="--delay: 0.25s;" data-photo="/team/viswanath.jpeg"><span class="team-num">04</span><span class="team-name">viswanath</span></div>
-          <div class="team-item" style="--delay: 0.3s;" data-photo="/team/steelbinde.jpeg"><span class="team-num">05</span><span class="team-name">steel Binde</span></div>
-          <div class="team-item" style="--delay: 0.35s;" data-photo="/team/aakash.jpeg"><span class="team-num">06</span><span class="team-name">Aakash</span></div>
-          <div class="team-item" style="--delay: 0.4s;" data-photo="/team/harshith.jpeg"><span class="team-num">07</span><span class="team-name">harshith</span></div>
-          <div class="team-item" style="--delay: 0.45s;" data-photo="/team/harshitha.jpeg"><span class="team-num">08</span><span class="team-name">Harshitha</span></div>
-          <div class="team-item" style="--delay: 0.5s;" data-photo="/team/munisankar.jpeg"><span class="team-num">09</span><span class="team-name">Muni sankar</span></div>
-          <div class="team-item" style="--delay: 0.55s;" data-photo="/team/hemasri.jpeg"><span class="team-num">10</span><span class="team-name">Hema sri</span></div>
+          <div class="team-item" style="--delay: 0.1s;" data-photo="/team/sathesh.jpg"><span class="team-num">01</span><span class="team-name">Sathesh kumar</span></div>
+          <div class="team-item" style="--delay: 0.15s;" data-photo="/team/vamsi.jpg"><span class="team-num">02</span><span class="team-name">Vamsi</span></div>
+          <div class="team-item" style="--delay: 0.2s;" data-photo="/team/amrutha.jpg"><span class="team-num">03</span><span class="team-name">Ashwini</span></div>
+          <div class="team-item" style="--delay: 0.25s;" data-photo="/team/viswanath.jpg"><span class="team-num">04</span><span class="team-name">viswanath</span></div>
+          <div class="team-item" style="--delay: 0.3s;" data-photo="/team/bindu.jpg"><span class="team-num">05</span><span class="team-name">steel Binde</span></div>
+          <div class="team-item" style="--delay: 0.35s;" data-photo="/team/aakash.jpg"><span class="team-num">06</span><span class="team-name">Aakash</span></div>
+          <div class="team-item" style="--delay: 0.4s;" data-photo="/team/harshith.jpg"><span class="team-num">07</span><span class="team-name">harshith</span></div>
+          <div class="team-item" style="--delay: 0.45s;" data-photo="/team/harshitha.jpg"><span class="team-num">08</span><span class="team-name">Harshitha</span></div>
+          <div class="team-item" style="--delay: 0.5s;" data-photo="/team/munisankar.jpg"><span class="team-num">09</span><span class="team-name">Muni sankar</span></div>
+          <div class="team-item" style="--delay: 0.55s;" data-photo="/team/hemasri.jpg"><span class="team-num">10</span><span class="team-name">Hema sri</span></div>
         </div>
       </div>
 
@@ -54,6 +54,22 @@
   <!-- Floating Photo Popup -->
   <div id="photo-popup" class="photo-popup">
     <img id="photo-popup-img" src="" alt="Team member" />
+    <span id="photo-popup-name" class="photo-popup-name"></span>
+  </div>
+
+  <!-- Team Member Photo Modal Window -->
+  <div id="photo-modal" class="photo-modal hidden">
+    <div id="photo-modal-backdrop" class="photo-modal-backdrop"></div>
+    <div class="photo-modal-card">
+      <button id="photo-modal-close" class="photo-modal-close" title="Close Window">&times;</button>
+      <div class="photo-modal-img-wrapper">
+        <img id="photo-modal-img" src="" alt="Team Member Photo" />
+      </div>
+      <div class="photo-modal-info">
+        <h3 id="photo-modal-name" class="photo-modal-name">Member Name</h3>
+        <span id="photo-modal-role" class="photo-modal-role">TEAM DEBA DEBA</span>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/src/main.js"></script>
