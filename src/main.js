@@ -1706,7 +1706,7 @@ function setupPhotoReveal() {
 }
 
 // ==========================================================
-// 🕵️ OFFICE ROAST: SECRET MISSION GAME ENGINE
+// 🕵️ LEVEL 1, 2, 3 TROLL PLATFORMER & OFFICE ROAST ENGINE
 // ==========================================================
 function setupOfficeRoastMission() {
   const pixelBtn = document.getElementById('suspicious-pixel');
@@ -1716,114 +1716,113 @@ function setupOfficeRoastMission() {
 
   if (!pixelBtn || !overlay || !stageBox) return;
 
-  let currentStage = 0;
-  let ratAnimId = null;
-  let activeDanceStep = 0;
-  const danceSequence = ['ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight'];
-  const danceLabels = ['↑', '↓', '↑', '↓', '←', '→', '←', '→'];
+  let currentLevel = 1;
+  let deathsCount = 0;
+  let gameRunning = false;
+  let gameAnimId = null;
   let currentShowcaseMemberIndex = 0;
   const memberKeys = Object.keys(TEAM_MEMBERS);
 
-  // Synthesized Sound Effects for Mission
-  function playMissionBeep(freq = 440, type = 'sine', dur = 0.15) {
+  // Audio Synthesizers
+  function playSound(type) {
     try {
       initAudioContext();
       if (!audioCtx) return;
       const t = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, t);
-      gain.gain.setValueAtTime(0.2, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(t);
-      osc.stop(t + dur);
-    } catch (_) {}
-  }
 
-  function playBuzzer() {
-    try {
-      initAudioContext();
-      if (!audioCtx) return;
-      const t = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(150, t);
-      osc.frequency.linearRampToValueAtTime(90, t + 0.35);
-      gain.gain.setValueAtTime(0.3, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(t);
-      osc.stop(t + 0.35);
-    } catch (_) {}
-  }
-
-  function playRatSqueak() {
-    try {
-      initAudioContext();
-      if (!audioCtx) return;
-      const t = audioCtx.currentTime;
-      for (let i = 0; i < 2; i++) {
+      if (type === 'jump') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(160, t);
+        osc.frequency.exponentialRampToValueAtTime(480, t + 0.1);
+        gain.gain.setValueAtTime(0.15, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.1);
+      } else if (type === 'die') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, t);
+        osc.frequency.exponentialRampToValueAtTime(60, t + 0.28);
+        gain.gain.setValueAtTime(0.3, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.28);
+      } else if (type === 'spring') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(2200 + i * 400, t + i * 0.08);
-        osc.frequency.exponentialRampToValueAtTime(4500, t + i * 0.08 + 0.06);
-        gain.gain.setValueAtTime(0.3, t + i * 0.08);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.06);
+        osc.frequency.setValueAtTime(200, t);
+        osc.frequency.exponentialRampToValueAtTime(900, t + 0.25);
+        gain.gain.setValueAtTime(0.3, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.start(t + i * 0.08);
-        osc.stop(t + i * 0.08 + 0.06);
+        osc.start(t);
+        osc.stop(t + 0.25);
+      } else if (type === 'troll') {
+        [220, 180, 140].forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, t + i * 0.08);
+          gain.gain.setValueAtTime(0.2, t + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.1);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(t + i * 0.08);
+          osc.stop(t + i * 0.08 + 0.1);
+        });
+      } else if (type === 'win') {
+        [330, 392, 523, 659].forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, t + i * 0.1);
+          gain.gain.setValueAtTime(0.25, t + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.1 + 0.2);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(t + i * 0.1);
+          osc.stop(t + i * 0.1 + 0.2);
+        });
+      } else if (type === 'alarm') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(450, t);
+        osc.frequency.linearRampToValueAtTime(900, t + 0.2);
+        osc.frequency.linearRampToValueAtTime(450, t + 0.4);
+        gain.gain.setValueAtTime(0.25, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.45);
       }
-    } catch (_) {}
-  }
-
-  function playDiscoChime() {
-    const notes = [440, 554, 659, 880];
-    notes.forEach((freq, idx) => {
-      setTimeout(() => playMissionBeep(freq, 'triangle', 0.2), idx * 100);
-    });
-  }
-
-  function playSiren() {
-    try {
-      initAudioContext();
-      if (!audioCtx) return;
-      const t = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(400, t);
-      osc.frequency.linearRampToValueAtTime(850, t + 0.2);
-      osc.frequency.linearRampToValueAtTime(400, t + 0.4);
-      gain.gain.setValueAtTime(0.25, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(t);
-      osc.stop(t + 0.5);
     } catch (_) {}
   }
 
   function openMission() {
     recordUserActivity();
-    currentStage = 1;
+    deathsCount = 0;
+    currentLevel = 1;
     overlay.classList.remove('hidden');
-    playMissionBeep(600, 'sine', 0.2);
-    triggerHaptic([50, 50, 100]);
-    showSassyToast('🕵️ MISSION INITIATED: Find the truth...', 3000);
-    renderStage1ForbiddenPath();
+    playSound('jump');
+    showSassyToast('🕵️ MISSION INITIATED: Good luck, you will need it.', 3000);
+    startPlatformerGame();
   }
 
   function closeMission() {
     overlay.classList.add('hidden');
-    if (ratAnimId) cancelAnimationFrame(ratAnimId);
-    window.removeEventListener('keydown', handleDanceKey);
+    gameRunning = false;
+    if (gameAnimId) cancelAnimationFrame(gameAnimId);
   }
 
   pixelBtn.addEventListener('click', (e) => {
@@ -1831,9 +1830,7 @@ function setupOfficeRoastMission() {
     openMission();
   });
 
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeMission);
-  }
+  if (closeBtn) closeBtn.addEventListener('click', closeMission);
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
@@ -1841,476 +1838,738 @@ function setupOfficeRoastMission() {
     }
   });
 
-  // --------------------------------------------------------
-  // STAGE 1: 🚶 Walk the Forbidden Path
-  // --------------------------------------------------------
-  function renderStage1ForbiddenPath() {
-    currentStage = 1;
-    let currentStep = 1;
-
+  // ========================================================
+  // 🎮 2D PLATFORMER CORE ENGINE
+  // ========================================================
+  function startPlatformerGame() {
     stageBox.innerHTML = `
-      <div class="mission-title">🚶 Walk the Forbidden Path</div>
-      <div class="mission-desc">Click the 3 mystery runes in the exact sequence: <b>1 → 2 → 3</b>. Don't embarrass yourself.</div>
-      <div id="forbidden-arena" class="forbidden-path-arena"></div>
-    `;
+      <div class="troll-game-wrapper">
+        <div class="troll-hud">
+          <div class="troll-level-title">
+            <span class="troll-level-pill" id="troll-level-pill">LEVEL ${currentLevel}</span>
+            <span id="troll-level-name">“JUST WALK”</span>
+          </div>
+          <div class="troll-stats">
+            <span class="troll-deaths" id="troll-deaths">💀 Fails: 0</span>
+            <button class="troll-retry-btn" id="troll-retry-btn">🔄 Retry (R)</button>
+          </div>
+        </div>
 
-    const arena = document.getElementById('forbidden-arena');
-    const positions = [
-      { left: 15 + Math.random() * 20, top: 20 + Math.random() * 50 },
-      { left: 45 + Math.random() * 15, top: 15 + Math.random() * 55 },
-      { left: 70 + Math.random() * 15, top: 25 + Math.random() * 45 }
-    ];
+        <div class="troll-canvas-container" id="troll-canvas-box">
+          <canvas id="troll-game-canvas" width="680" height="340"></canvas>
+          <div id="troll-banner-slot"></div>
+        </div>
 
-    // Shuffle display order for mystery
-    const numbers = [1, 2, 3];
-    numbers.sort(() => Math.random() - 0.5);
-
-    numbers.forEach((num, index) => {
-      const node = document.createElement('div');
-      node.className = 'path-node';
-      node.innerText = num;
-      node.style.left = `${positions[index].left}%`;
-      node.style.top = `${positions[index].top}%`;
-
-      node.addEventListener('click', (e) => {
-        e.stopPropagation();
-        recordUserActivity();
-
-        if (num === currentStep) {
-          // Correct spot clicked!
-          node.classList.add('completed');
-          playMissionBeep(450 + currentStep * 150, 'triangle', 0.15);
-          triggerHaptic(40);
-          currentStep++;
-
-          if (currentStep > 3) {
-            playDiscoChime();
-            setTimeout(renderStage2CatchRat, 600);
-          }
-        } else {
-          // Wrong spot clicked!
-          playBuzzer();
-          triggerHaptic([80, 50, 80]);
-          arena.classList.add('shake-error');
-          showSassyToast('Bro, that was not the mission. 😭', 3200);
-
-          setTimeout(() => {
-            renderStage1ForbiddenPath(); // Reset sequence
-          }, 450);
-        }
-      });
-
-      arena.appendChild(node);
-    });
-  }
-
-  // --------------------------------------------------------
-  // STAGE 2: 🐀 Catch the Office Rat
-  // --------------------------------------------------------
-  function renderStage2CatchRat() {
-    currentStage = 2;
-    stageBox.innerHTML = `
-      <div class="mission-title">🐀 Catch the Office Rat</div>
-      <div class="mission-desc">A wild office rat is running around leaking your Slack messages! Catch it before it escapes!</div>
-      <div id="rat-arena" class="rat-arena">
-        <div id="office-rat" class="office-rat">
-          <span>🐀</span>
-          <span class="rat-bubble" id="rat-bubble">Reporting to HR!</span>
+        <div class="troll-controls-bar">
+          <span class="troll-keys-hint">Move: <b>← → / A D</b> | Jump: <b>SPACE / ↑ / W</b></span>
+          <div class="troll-dpad-group">
+            <button class="troll-ctrl-btn" id="btn-left">◀</button>
+            <button class="troll-ctrl-btn" id="btn-right">▶</button>
+            <button class="troll-ctrl-btn troll-jump-btn" id="btn-jump">⬆ JUMP</button>
+          </div>
         </div>
       </div>
     `;
 
-    const arena = document.getElementById('rat-arena');
-    const rat = document.getElementById('office-rat');
-    const bubble = document.getElementById('rat-bubble');
+    const canvas = document.getElementById('troll-game-canvas');
+    const ctx = canvas.getContext('2d');
+    const deathsEl = document.getElementById('troll-deaths');
+    const levelPill = document.getElementById('troll-level-pill');
+    const levelName = document.getElementById('troll-level-name');
+    const bannerSlot = document.getElementById('troll-banner-slot');
+    const retryBtn = document.getElementById('troll-retry-btn');
 
-    let posX = 80;
-    let posY = 80;
-    let vx = (Math.random() > 0.5 ? 1 : -1) * (3.8 + Math.random() * 2);
-    let vy = (Math.random() > 0.5 ? 1 : -1) * (3.5 + Math.random() * 2);
-
-    const ratQuips = [
-      'Reporting to HR! 📝',
-      'Who wrote this PR?! 😭',
-      'I saw your lunch break! 👀',
-      'Sathwik is watching! 👑',
-      'Merge conflict incoming! 💥'
-    ];
-    let lastQuipTime = 0;
-
-    function animateRat(time) {
-      if (currentStage !== 2 || !arena || !rat) return;
-
-      const arenaRect = arena.getBoundingClientRect();
-      const maxX = arenaRect.width - 50;
-      const maxY = arenaRect.height - 50;
-
-      posX += vx;
-      posY += vy;
-
-      if (posX <= 10) { posX = 10; vx = Math.abs(vx); }
-      else if (posX >= maxX) { posX = maxX; vx = -Math.abs(vx); }
-
-      if (posY <= 10) { posY = 10; vy = Math.abs(vy); }
-      else if (posY >= maxY) { posY = maxY; vy = -Math.abs(vy); }
-
-      rat.style.left = `${posX}px`;
-      rat.style.top = `${posY}px`;
-      rat.style.transform = vx > 0 ? 'scaleX(-1)' : 'scaleX(1)';
-
-      if (time - lastQuipTime > 2200) {
-        lastQuipTime = time;
-        if (bubble) bubble.innerText = ratQuips[Math.floor(Math.random() * ratQuips.length)];
-      }
-
-      ratAnimId = requestAnimationFrame(animateRat);
-    }
-
-    ratAnimId = requestAnimationFrame(animateRat);
-
-    rat.addEventListener('click', (e) => {
-      e.stopPropagation();
-      recordUserActivity();
-      cancelAnimationFrame(ratAnimId);
-
-      playRatSqueak();
-      triggerHaptic([60, 40, 120]);
-      rat.style.transform = 'scale(2.2) rotate(720deg)';
-      rat.style.opacity = '0';
-      rat.style.transition = 'all 0.4s ease';
-
-      if (bubble) bubble.innerText = 'SQUEAK! Caught! 💥';
-      showSassyToast('🐀 Rat captured! Slack secrets safe for now.', 2500);
-
-      setTimeout(renderStage3StupidDance, 700);
-    });
-  }
-
-  // --------------------------------------------------------
-  // STAGE 3: 🕺 Do the Stupid Dance
-  // --------------------------------------------------------
-  function handleDanceKey(e) {
-    if (currentStage !== 3) return;
-
-    const key = e.key;
-    const expected = danceSequence[activeDanceStep];
-
-    // Match arrow keys or WASD
-    const keyMap = {
-      'w': 'ArrowUp', 'W': 'ArrowUp',
-      's': 'ArrowDown', 'S': 'ArrowDown',
-      'a': 'ArrowLeft', 'A': 'ArrowLeft',
-      'd': 'ArrowRight', 'D': 'ArrowRight'
+    const keys = { left: false, right: false, jump: false };
+    let player = {
+      x: 40, y: 230, vx: 0, vy: 0,
+      w: 18, h: 28, isGrounded: false,
+      coyote: 0, facing: 1, anim: 0,
+      isDying: false
     };
-    const normalizedKey = keyMap[key] || key;
 
-    if (normalizedKey === expected) {
-      processDanceStepSuccess();
-    } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(key.toLowerCase())) {
-      processDanceStepFail();
+    let levelData = {};
+    let particles = [];
+    let floatingTexts = [];
+
+    const levelTitles = {
+      1: { name: '“JUST WALK”', sub: 'Easy, right? Just walk to the exit.' },
+      2: { name: '“TRUST NOTHING”', sub: 'Trust issues guaranteed.' },
+      3: { name: '“THE EMPLOYEE TEST” 💀', sub: 'The ultimate corporate gauntlet.' }
+    };
+
+    function loadLevel(lvl) {
+      currentLevel = lvl;
+      if (levelPill) levelPill.innerText = `LEVEL ${lvl}`;
+      if (levelName) levelName.innerText = levelTitles[lvl].name;
+      particles = [];
+      floatingTexts = [];
+      player.isDying = false;
+
+      if (lvl === 1) {
+        player.x = 40; player.y = 230; player.vx = 0; player.vy = 0;
+        levelData = {
+          platforms: [
+            { x: 20, y: 280, w: 100, h: 22, type: 'normal' },
+            { x: 160, y: 280, w: 85, h: 22, type: 'disappear', vanished: false, flash: 0 },
+            { x: 280, y: 250, w: 80, h: 22, type: 'falling', triggered: false, vy: 0 },
+            { x: 220, y: 180, w: 60, h: 18, type: 'normal' },
+            { x: 380, y: 200, w: 80, h: 18, type: 'normal' },
+            { x: 500, y: 260, w: 160, h: 24, type: 'normal' }
+          ],
+          door: { x: 550, y: 220, w: 26, h: 40, targetX: 550, moved: false },
+          traps: []
+        };
+      } else if (lvl === 2) {
+        player.x = 35; player.y = 230; player.vx = 0; player.vy = 0;
+        levelData = {
+          platforms: [
+            { x: 15, y: 280, w: 80, h: 22, type: 'normal' },
+            { x: 110, y: 280, w: 100, h: 22, type: 'fake_floor', triggered: false, vy: 0 },
+            { x: 140, y: 205, w: 65, h: 18, type: 'invisible', revealed: false },
+            { x: 240, y: 210, w: 70, h: 18, type: 'normal' },
+            { x: 340, y: 150, w: 65, h: 18, type: 'normal' },
+            { x: 450, y: 120, w: 70, h: 18, type: 'normal' },
+            { x: 580, y: 140, w: 85, h: 20, type: 'normal' }
+          ],
+          spring: { x: 265, y: 196, w: 24, h: 14, label: 'FREE COFFEE ☕' },
+          fakeCheckpoint: { x: 360, y: 122, w: 26, h: 28, triggered: false, label: '💾 CHECKPOINT SAVED!' },
+          fakeDoor: { x: 470, y: 80, w: 26, h: 40, label: 'EXIT 🚪' },
+          realDoor: { x: 620, y: 100, w: 26, h: 40, isReal: true },
+          traps: []
+        };
+      } else if (lvl === 3) {
+        player.x = 35; player.y = 230; player.vx = 0; player.vy = 0;
+        levelData = {
+          platforms: [
+            { x: 15, y: 280, w: 80, h: 22, type: 'normal' },
+            { x: 130, y: 250, w: 75, h: 18, type: 'moving', vx: 1.5, minX: 120, maxX: 230 },
+            { x: 260, y: 210, w: 75, h: 18, type: 'normal' },
+            { x: 370, y: 170, w: 80, h: 18, type: 'moving', vx: -1.5, minX: 340, maxX: 470 },
+            { x: 490, y: 220, w: 90, h: 18, type: 'normal' },
+            { x: 210, y: 130, w: 70, h: 18, type: 'normal' },
+            { x: 570, y: 150, w: 90, h: 20, type: 'normal' }
+          ],
+          target: {
+            x: 520, y: 190, w: 24, h: 24, vx: 0,
+            speech: 'Catch me for appraisal! 📈',
+            timer: 0
+          }
+        };
+      }
     }
-  }
 
-  function processDanceStepSuccess() {
-    recordUserActivity();
-    const hudPills = document.querySelectorAll('.dance-step-key');
-    if (hudPills[activeDanceStep]) {
-      hudPills[activeDanceStep].classList.remove('active');
-      hudPills[activeDanceStep].classList.add('done');
+    function addFloatingText(text, x, y, color = '#ff3366') {
+      floatingTexts.push({ text, x, y, vy: -1.2, alpha: 1.0, color });
     }
 
-    playMissionBeep(500 + activeDanceStep * 80, 'sine', 0.12);
-    triggerHaptic(35);
-    activeDanceStep++;
-
-    if (activeDanceStep < danceSequence.length) {
-      if (hudPills[activeDanceStep]) hudPills[activeDanceStep].classList.add('active');
-    } else {
-      // Completed Dance!
-      window.removeEventListener('keydown', handleDanceKey);
-      playDiscoChime();
-      triggerHaptic([50, 50, 150]);
-
-      const titleEl = document.querySelector('.mission-title');
-      const descEl = document.querySelector('.mission-desc');
-      if (titleEl) titleEl.innerText = '🕺 Excellent. HR has been notified.';
-      if (descEl) descEl.innerText = 'Security cameras logged your majestic dance moves.';
-
-      showSassyToast('🕺 Excellent. HR has been notified.', 3500);
-      setTimeout(renderStage4IQTest, 1400);
+    function spawnDeathParticles(x, y) {
+      for (let i = 0; i < 16; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const spd = 2 + Math.random() * 4;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * spd,
+          vy: Math.sin(angle) * spd,
+          life: 1.0,
+          color: Math.random() > 0.5 ? '#ff3366' : '#ffffff'
+        });
+      }
     }
-  }
 
-  function processDanceStepFail() {
-    playBuzzer();
-    triggerHaptic([60, 40, 60]);
-    activeDanceStep = 0;
-    const hudPills = document.querySelectorAll('.dance-step-key');
-    hudPills.forEach((p, i) => {
-      p.classList.remove('done', 'active');
-      if (i === 0) p.classList.add('active');
-    });
-    showSassyToast('Missed the step! Try again: ↑ ↓ ↑ ↓ ← → ← →', 2500);
-  }
+    function killPlayer(reason = 'Skill issue.') {
+      if (player.isDying) return;
+      player.isDying = true;
+      deathsCount++;
+      if (deathsEl) deathsEl.innerText = `💀 Fails: ${deathsCount}`;
+      playSound('die');
+      triggerHaptic([80, 50, 100]);
+      spawnDeathParticles(player.x + player.w / 2, player.y + player.h / 2);
+      addFloatingText(reason, player.x, Math.max(30, player.y - 10), '#ff3366');
 
-  function renderStage3StupidDance() {
-    currentStage = 3;
-    activeDanceStep = 0;
-
-    stageBox.innerHTML = `
-      <div class="mission-title">🕺 Do the Stupid Dance</div>
-      <div class="mission-desc">Follow the rhythm: <b>↑ ↓ ↑ ↓ ← → ← →</b> to confuse office cameras.</div>
-      <div class="dance-sequence-hud" id="dance-hud">
-        ${danceLabels.map((lbl, i) => `<div class="dance-step-key ${i === 0 ? 'active' : ''}">${lbl}</div>`).join('')}
-      </div>
-      <div class="dance-dpad">
-        <button class="dpad-btn dpad-up" data-dir="ArrowUp">↑</button>
-        <button class="dpad-btn dpad-left" data-dir="ArrowLeft">←</button>
-        <button class="dpad-btn dpad-down" data-dir="ArrowDown">↓</button>
-        <button class="dpad-btn dpad-right" data-dir="ArrowRight">→</button>
-      </div>
-    `;
-
-    window.removeEventListener('keydown', handleDanceKey);
-    window.addEventListener('keydown', handleDanceKey);
-
-    // On-screen D-Pad listeners for mobile / mouse
-    document.querySelectorAll('.dpad-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const dir = btn.dataset.dir;
-        if (dir === danceSequence[activeDanceStep]) {
-          processDanceStepSuccess();
-        } else {
-          processDanceStepFail();
-        }
-      });
-    });
-  }
-
-  // --------------------------------------------------------
-  // STAGE 4: 🧠 IQ Test
-  // --------------------------------------------------------
-  function renderStage4IQTest() {
-    currentStage = 4;
-    window.removeEventListener('keydown', handleDanceKey);
-
-    stageBox.innerHTML = `
-      <div class="mission-title">🧠 Mandatory Corporate IQ Test</div>
-      <div class="mission-desc">Please answer honestly. Your response is 100% confidential (we will show it to everyone).</div>
-      <div style="font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 1.2rem;">
-        “Are you actually working?”
-      </div>
-      <div class="iq-options-grid">
-        <button class="iq-option-btn" data-ans="yes"><span>YES</span> <span>(Lying)</span></button>
-        <button class="iq-option-btn" data-ans="no"><span>NO</span> <span>(Honest)</span></button>
-        <button class="iq-option-btn" data-ans="coffee"><span>I NEED COFFEE</span> <span>☕</span></button>
-      </div>
-    `;
-
-    document.querySelectorAll('.iq-option-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        recordUserActivity();
-        playMissionBeep(320, 'triangle', 0.4);
-        triggerHaptic([60, 40, 100]);
-
-        stageBox.innerHTML = `
-          <div class="mission-title" style="font-size: 2rem; color: #ff3366; margin-top: 1rem;">Suspicious… 🧐</div>
-          <div class="mission-desc" style="font-size: 1rem; color: #fff; margin-top: 0.5rem;">
-            Logging answer in permanent disciplinary records...
-          </div>
-        `;
-
-        showSassyToast('Suspicious… 🧐', 2500);
-        setTimeout(renderStage5FinalBoss, 1500);
-      });
-    });
-  }
-
-  // --------------------------------------------------------
-  // STAGE 5: 💀 Final Boss
-  // --------------------------------------------------------
-  function renderStage5FinalBoss() {
-    currentStage = 5;
-
-    stageBox.innerHTML = `
-      <div class="mission-title">💀 The Final Boss</div>
-      <div class="mission-desc">Whatever you do, absolutely under no circumstances touch this button.</div>
-      <button id="final-boss-btn" class="final-boss-btn">
-        ⚠️ DO NOT CLICK THIS ⚠️
-      </button>
-    `;
-
-    const bossBtn = document.getElementById('final-boss-btn');
-    if (bossBtn) {
-      bossBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        recordUserActivity();
-        playSiren();
-        triggerHaptic([100, 50, 200]);
-
-        stageBox.innerHTML = `
-          <div class="mission-title" style="font-size: 1.8rem; color: #ff1744; margin-top: 1rem;">
-            “You were specifically told not to.” 💀
-          </div>
-          <div class="mission-desc" style="font-size: 1rem; color: #ffffff; margin-top: 0.5rem;">
-            Initiating catastrophic sarcasm payload...
-          </div>
-        `;
-
-        showSassyToast('You were specifically told not to.', 3000);
-        setTimeout(renderStage6RoastLoading, 1400);
-      });
-    }
-  }
-
-  // --------------------------------------------------------
-  // STAGE 6: 🔥 ROAST LOADING…
-  // --------------------------------------------------------
-  function renderStage6RoastLoading() {
-    currentStage = 6;
-
-    stageBox.innerHTML = `
-      <div class="mission-title">🔥 ROAST LOADING…</div>
-      <div class="mission-desc">Scanning personnel records for maximum emotional damage.</div>
-      <div class="hacker-terminal">
-        <div id="terminal-logs" class="terminal-logs"></div>
-        <div class="roast-progress-bar-wrap">
-          <div id="roast-progress-bar" class="roast-progress-bar"></div>
-        </div>
-      </div>
-    `;
-
-    const logsContainer = document.getElementById('terminal-logs');
-    const progressBar = document.getElementById('roast-progress-bar');
-
-    const roastSteps = [
-      { text: '> Analyzing employee...', progress: 18, delay: 400 },
-      { text: '> Checking attendance records...', progress: 36, delay: 900 },
-      { text: '> Scanning excuses file...', progress: 54, delay: 1400 },
-      { text: '> Calculating productivity: 0.00001%...', progress: 72, delay: 1900 },
-      { text: '> Consulting HR legal department...', progress: 85, delay: 2400 },
-      { text: '> Downloading roast payload... 97%', progress: 97, delay: 2900 },
-      { text: '> 🚨 ERROR: Too much potential content detected. 😂', progress: 97, delay: 3500, isError: true }
-    ];
-
-    roastSteps.forEach((step) => {
+      // Instant quick respawn
       setTimeout(() => {
-        if (currentStage !== 6 || !logsContainer) return;
+        loadLevel(currentLevel);
+      }, 200);
+    }
 
-        playMissionBeep(step.isError ? 220 : 600 + Math.random() * 200, 'sawtooth', 0.08);
-        const item = document.createElement('div');
-        item.className = `terminal-log-item ${step.isError ? 'terminal-log-error' : ''}`;
-        item.innerText = step.text;
-        logsContainer.appendChild(item);
+    function completeLevel(lvl) {
+      playSound('win');
+      triggerHaptic([60, 40, 120]);
 
-        if (progressBar) {
-          progressBar.style.width = `${step.progress}%`;
-        }
-
-        if (step.isError) {
-          triggerHaptic([80, 50, 150]);
-          setTimeout(renderStage7SecretUnlocked, 1600);
-        }
-      }, step.delay);
-    });
-  }
-
-  // --------------------------------------------------------
-  // STAGE 7: 📸 SECRET PHOTO UNLOCKED
-  // --------------------------------------------------------
-  function renderStage7SecretUnlocked() {
-    currentStage = 7;
-    toggleMemeMode(true); // Unlock sarcastic meme mode globally!
-    playDiscoChime();
-    triggerHaptic([100, 50, 100, 50, 200]);
-
-    function updateShowcaseCard() {
-      const key = memberKeys[currentShowcaseMemberIndex];
-      const member = TEAM_MEMBERS[key];
-      const imgEl = document.getElementById('showcase-img');
-      const nameEl = document.getElementById('showcase-name');
-      const roleEl = document.getElementById('showcase-role');
-      const roastEl = document.getElementById('showcase-roast');
-      const pillEl = document.getElementById('showcase-index');
-
-      if (imgEl && member) {
-        imgEl.src = member.sarcasticPhoto;
-        imgEl.onerror = () => { imgEl.src = member.realPhoto; };
-      }
-      if (nameEl && member) nameEl.innerText = member.name;
-      if (roleEl && member) roleEl.innerText = member.role;
-      if (roastEl && member) roastEl.innerText = `“${member.roast}”`;
-      if (pillEl) pillEl.innerText = `${currentShowcaseMemberIndex + 1} / ${memberKeys.length}`;
-
-      if (member && member.sound) {
-        playAnimalSound(member.sound);
+      if (lvl === 1) {
+        bannerSlot.innerHTML = `
+          <div class="troll-banner-modal">
+            <div class="troll-banner-title">LEVEL 1 PASSED 🎉</div>
+            <div class="troll-banner-sub">“That was the easy level. 😂”</div>
+            <button class="troll-banner-btn" id="next-lvl-btn">Level 2: Trust Nothing →</button>
+          </div>
+        `;
+        document.getElementById('next-lvl-btn').addEventListener('click', () => {
+          bannerSlot.innerHTML = '';
+          loadLevel(2);
+        });
+      } else if (lvl === 2) {
+        bannerSlot.innerHTML = `
+          <div class="troll-banner-modal">
+            <div class="troll-banner-title">LEVEL 2 PASSED 🧠</div>
+            <div class="troll-banner-sub">“Okay… you're getting suspicious.”</div>
+            <button class="troll-banner-btn" id="next-lvl-btn">Level 3: The Employee Test 💀 →</button>
+          </div>
+        `;
+        document.getElementById('next-lvl-btn').addEventListener('click', () => {
+          bannerSlot.innerHTML = '';
+          loadLevel(3);
+        });
+      } else if (lvl === 3) {
+        // Grand Finale Climax!
+        triggerClimaxRoastSequence();
       }
     }
 
-    stageBox.innerHTML = `
-      <div class="secret-unlocked-card">
-        <div class="unlocked-trophy">📸 🏆</div>
-        <div class="mission-title" style="color: #ff3366;">SECRET PHOTO UNLOCKED</div>
-        <div class="mission-desc" style="color: #fff; font-size: 0.95rem; margin-bottom: 0.8rem;">
-          “Congratulations. You wasted 47 seconds of company time.”
-        </div>
+    function triggerClimaxRoastSequence() {
+      gameRunning = false;
+      playSound('alarm');
+      triggerHaptic([100, 50, 100, 50, 200]);
 
-        <div class="sarcastic-showcase-box">
-          <div class="showcase-avatar-frame">
-            <img id="showcase-img" class="showcase-avatar-img" src="" alt="Sarcastic Roast" />
+      stageBox.innerHTML = `
+        <div class="hacker-terminal" style="max-width: 520px; width: 100%; margin: 1rem 0;">
+          <div style="color: #ff3366; font-weight: bold; margin-bottom: 0.6rem; font-size: 1rem;">
+            🚨 SYSTEM OVERRIDE: THE EMPLOYEE TEST PASSED!
           </div>
-          <div class="showcase-member-name" id="showcase-name">Sathwik</div>
-          <div class="showcase-member-role" id="showcase-role">Head of Drama</div>
-          <div class="showcase-member-roast" id="showcase-roast">“Roast content”</div>
-
-          <div class="showcase-nav-row">
-            <button id="showcase-prev-btn" class="showcase-nav-btn" title="Previous Victim">←</button>
-            <span id="showcase-index" class="showcase-index-pill">1 / 11</span>
-            <button id="showcase-next-btn" class="showcase-nav-btn" title="Next Victim">→</button>
-          </div>
+          <div id="climax-logs" class="terminal-logs" style="min-height: 140px;"></div>
         </div>
+      `;
 
-        <button id="btn-reset-reality" class="btn-reset-reality">
-          <span>🔄 Return to Normal Reality</span>
-        </button>
-      </div>
-    `;
+      const logsEl = document.getElementById('climax-logs');
+      const climaxSteps = [
+        { text: '> 🚨 EMPLOYEE IDENTIFIED.', delay: 400 },
+        { text: '> 🔍 RUNNING BACKGROUND CHECK…', delay: 1000 },
+        { text: '> 📉 CHECKING PRODUCTIVITY… (0.0001%)', delay: 1600 },
+        { text: '> 📁 CHECKING WORK HISTORY…', delay: 2200 },
+        { text: '> 🔥 ROAST DATABASE UNLOCKED.', delay: 2800 },
+        { text: '> 🔓 OFFICE ROAST MODE ACTIVATED! 😂', delay: 3400, isFinal: true }
+      ];
 
-    updateShowcaseCard();
+      climaxSteps.forEach((step) => {
+        setTimeout(() => {
+          if (!logsEl) return;
+          playSound('jump');
+          const row = document.createElement('div');
+          row.className = `terminal-log-item ${step.isFinal ? 'terminal-log-error' : ''}`;
+          row.innerText = step.text;
+          logsEl.appendChild(row);
 
-    const prevBtn = document.getElementById('showcase-prev-btn');
-    const nextBtn = document.getElementById('showcase-next-btn');
-    const resetRealityBtn = document.getElementById('btn-reset-reality');
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        recordUserActivity();
-        currentShowcaseMemberIndex = (currentShowcaseMemberIndex - 1 + memberKeys.length) % memberKeys.length;
-        updateShowcaseCard();
+          if (step.isFinal) {
+            triggerHaptic([100, 100, 250]);
+            setTimeout(renderFinalSarcasticShowcase, 1600);
+          }
+        }, step.delay);
       });
     }
 
-    if (nextBtn) {
-      nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        recordUserActivity();
-        currentShowcaseMemberIndex = (currentShowcaseMemberIndex + 1) % memberKeys.length;
-        updateShowcaseCard();
+    function renderFinalSarcasticShowcase() {
+      toggleMemeMode(true); // Unlock meme mode globally!
+      playSound('win');
+
+      function updateShowcaseCard() {
+        const key = memberKeys[currentShowcaseMemberIndex];
+        const member = TEAM_MEMBERS[key];
+        const imgEl = document.getElementById('showcase-img');
+        const nameEl = document.getElementById('showcase-name');
+        const roleEl = document.getElementById('showcase-role');
+        const roastEl = document.getElementById('showcase-roast');
+        const pillEl = document.getElementById('showcase-index');
+
+        if (imgEl && member) {
+          imgEl.src = member.sarcasticPhoto;
+          imgEl.onerror = () => { imgEl.src = member.realPhoto; };
+        }
+        if (nameEl && member) nameEl.innerText = member.name;
+        if (roleEl && member) roleEl.innerText = member.role;
+        if (roastEl && member) roastEl.innerText = `“${member.roast}”`;
+        if (pillEl) pillEl.innerText = `${currentShowcaseMemberIndex + 1} / ${memberKeys.length}`;
+
+        if (member && member.sound) {
+          playAnimalSound(member.sound);
+        }
+      }
+
+      stageBox.innerHTML = `
+        <div class="secret-unlocked-card">
+          <div class="unlocked-trophy">📸 🏆</div>
+          <div class="mission-title" style="color: #ff3366;">OFFICE ROAST MODE ACTIVATED</div>
+          <div class="mission-desc" style="color: #fff; font-size: 0.95rem; margin-bottom: 0.6rem;">
+            “Congratulations. You wasted company time and unlocked everyone's roast.”
+          </div>
+
+          <div class="sarcastic-showcase-box">
+            <div class="showcase-avatar-frame">
+              <img id="showcase-img" class="showcase-avatar-img" src="" alt="Sarcastic Roast" />
+            </div>
+            <div class="showcase-member-name" id="showcase-name">Sathwik</div>
+            <div class="showcase-member-role" id="showcase-role">Head of Drama</div>
+            <div class="showcase-member-roast" id="showcase-roast">“Roast content”</div>
+
+            <div class="showcase-nav-row">
+              <button id="showcase-prev-btn" class="showcase-nav-btn" title="Previous Victim">←</button>
+              <span id="showcase-index" class="showcase-index-pill">1 / 11</span>
+              <button id="showcase-next-btn" class="showcase-nav-btn" title="Next Victim">→</button>
+            </div>
+          </div>
+
+          <button id="btn-reset-reality" class="btn-reset-reality">
+            <span>🔄 Return to Normal Reality</span>
+          </button>
+        </div>
+      `;
+
+      updateShowcaseCard();
+
+      const prevBtn = document.getElementById('showcase-prev-btn');
+      const nextBtn = document.getElementById('showcase-next-btn');
+      const resetRealityBtn = document.getElementById('btn-reset-reality');
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          recordUserActivity();
+          currentShowcaseMemberIndex = (currentShowcaseMemberIndex - 1 + memberKeys.length) % memberKeys.length;
+          updateShowcaseCard();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          recordUserActivity();
+          currentShowcaseMemberIndex = (currentShowcaseMemberIndex + 1) % memberKeys.length;
+          updateShowcaseCard();
+        });
+      }
+
+      if (resetRealityBtn) {
+        resetRealityBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          recordUserActivity();
+          toggleMemeMode(false);
+          closeMission();
+          showSassyToast('😇 Normal Real Photos Restored.', 3000);
+        });
+      }
+    }
+
+    // Input Handlers
+    function handleKeyDown(e) {
+      if (!gameRunning) return;
+      if (['ArrowLeft', 'a', 'A'].includes(e.key)) keys.left = true;
+      if (['ArrowRight', 'd', 'D'].includes(e.key)) keys.right = true;
+      if (['ArrowUp', 'w', 'W', ' ', 'Spacebar'].includes(e.key)) {
+        e.preventDefault();
+        keys.jump = true;
+      }
+      if (e.key === 'r' || e.key === 'R') loadLevel(currentLevel);
+    }
+
+    function handleKeyUp(e) {
+      if (['ArrowLeft', 'a', 'A'].includes(e.key)) keys.left = false;
+      if (['ArrowRight', 'd', 'D'].includes(e.key)) keys.right = false;
+      if (['ArrowUp', 'w', 'W', ' ', 'Spacebar'].includes(e.key)) keys.jump = false;
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    // On-screen touch buttons
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnJump = document.getElementById('btn-jump');
+
+    if (btnLeft) {
+      btnLeft.addEventListener('pointerdown', () => keys.left = true);
+      btnLeft.addEventListener('pointerup', () => keys.left = false);
+      btnLeft.addEventListener('pointerleave', () => keys.left = false);
+    }
+    if (btnRight) {
+      btnRight.addEventListener('pointerdown', () => keys.right = true);
+      btnRight.addEventListener('pointerup', () => keys.right = false);
+      btnRight.addEventListener('pointerleave', () => keys.right = false);
+    }
+    if (btnJump) {
+      btnJump.addEventListener('pointerdown', () => keys.jump = true);
+      btnJump.addEventListener('pointerup', () => keys.jump = false);
+      btnJump.addEventListener('pointerleave', () => keys.jump = false);
+    }
+    if (retryBtn) {
+      retryBtn.addEventListener('click', () => loadLevel(currentLevel));
+    }
+    if (canvas) {
+      canvas.addEventListener('click', () => {
+        if (player.isDying) loadLevel(currentLevel);
       });
     }
 
-    if (resetRealityBtn) {
-      resetRealityBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        recordUserActivity();
-        toggleMemeMode(false);
-        closeMission();
-        showSassyToast('😇 Normal Real Photos Restored.', 3000);
-      });
+    // ========================================================
+    // MAIN GAME LOOP (Physics & Render)
+    // ========================================================
+    loadLevel(1);
+    gameRunning = true;
+
+    function gameLoop() {
+      if (!gameRunning) return;
+
+      if (!player.isDying) {
+        // 1. Horizontal Movement
+        const targetVx = (keys.right ? 3.6 : 0) - (keys.left ? 3.6 : 0);
+        player.vx = player.vx * 0.7 + targetVx * 0.3;
+        if (Math.abs(targetVx) > 0.1) {
+          player.facing = targetVx > 0 ? 1 : -1;
+          player.anim += 0.25;
+        } else {
+          player.anim = 0;
+        }
+
+        // 2. Vertical Movement & Gravity
+        player.vy += 0.42;
+        if (player.vy > 9.5) player.vy = 9.5;
+
+        if (player.isGrounded) {
+          player.coyote = 5;
+        } else if (player.coyote > 0) {
+          player.coyote--;
+        }
+
+        if (keys.jump && player.coyote > 0) {
+          player.vy = -8.8;
+          player.coyote = 0;
+          player.isGrounded = false;
+          playSound('jump');
+        }
+
+        // Apply Movement & Collision
+        player.x += player.vx;
+        player.y += player.vy;
+        player.isGrounded = false;
+
+        // Platform Collisions & Traps
+        if (levelData.platforms) {
+          levelData.platforms.forEach((p) => {
+            if (p.type === 'moving') {
+              p.x += p.vx;
+              if (p.x <= p.minX || p.x >= p.maxX) p.vx *= -1;
+            }
+
+            if (p.type === 'falling' && p.triggered) {
+              p.vy += 0.45;
+              p.y += p.vy;
+            }
+
+            if (p.type === 'disappear' && p.vanished) return;
+
+            // AABB check
+            const prevY = player.y - player.vy;
+            const isAbove = prevY + player.h <= p.y + 8;
+            const isWithinX = player.x + player.w > p.x + 2 && player.x < p.x + p.w - 2;
+
+            if (isWithinX && isAbove && player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + 8 && player.vy >= 0) {
+              player.y = p.y - player.h;
+              player.vy = 0;
+              player.isGrounded = true;
+
+              // Trigger Level 1 Traps
+              if (p.type === 'disappear' && !p.vanished) {
+                p.flash++;
+                if (p.flash > 4) {
+                  p.vanished = true;
+                  playSound('die');
+                  addFloatingText('NOPE! 💨', p.x + 20, p.y - 10);
+                }
+              } else if (p.type === 'falling' && !p.triggered) {
+                p.triggered = true;
+                p.vy = 2;
+                addFloatingText('BYE! ⬇️', p.x + 20, p.y - 10);
+              } else if (p.type === 'fake_floor' && !p.triggered) {
+                p.triggered = true;
+                p.vy = 4;
+                playSound('troll');
+                addFloatingText('TRICKED! 🤡', p.x + 20, p.y - 10);
+              } else if (p.type === 'invisible') {
+                p.revealed = true;
+              }
+            }
+          });
+        }
+
+        // Level 1: Fleeing Finish Door
+        if (currentLevel === 1 && levelData.door) {
+          const d = levelData.door;
+          const dist = Math.hypot((player.x + player.w / 2) - (d.x + d.w / 2), (player.y + player.h / 2) - (d.y + d.h / 2));
+
+          if (dist < 75 && !d.moved) {
+            d.moved = true;
+            d.targetX = 630;
+            playSound('troll');
+            addFloatingText('NOPE! 🏃', d.x, d.y - 15);
+          }
+
+          d.x += (d.targetX - d.x) * 0.15;
+
+          // Reach exit
+          if (Math.abs(player.x - d.x) < 22 && Math.abs(player.y - d.y) < 32) {
+            completeLevel(1);
+            return;
+          }
+        }
+
+        // Level 2: Spring Pad, Fake Door, Fake Checkpoint, Real Door
+        if (currentLevel === 2) {
+          const s = levelData.spring;
+          if (s && player.x + player.w > s.x && player.x < s.x + s.w && player.y + player.h >= s.y && player.y + player.h <= s.y + s.h + 6) {
+            playSound('spring');
+            triggerHaptic(60);
+            player.vx = -16;
+            player.vy = -6;
+            addFloatingText('BOING! 🚀', s.x - 10, s.y - 20);
+          }
+
+          const fc = levelData.fakeCheckpoint;
+          if (fc && !fc.triggered && Math.hypot(player.x - fc.x, player.y - fc.y) < 24) {
+            fc.triggered = true;
+            playSound('troll');
+            killPlayer('Saved to Trash! 🗑️');
+            return;
+          }
+
+          const fd = levelData.fakeDoor;
+          if (fd && Math.hypot(player.x - fd.x, player.y - fd.y) < 26) {
+            playSound('troll');
+            killPlayer('Door was a lie. 🤡');
+            return;
+          }
+
+          const rd = levelData.realDoor;
+          if (rd && Math.hypot(player.x - rd.x, player.y - rd.y) < 28) {
+            completeLevel(2);
+            return;
+          }
+        }
+
+        // Level 3: Tiny Running Target
+        if (currentLevel === 3 && levelData.target) {
+          const tgt = levelData.target;
+          const dx = (player.x + player.w / 2) - (tgt.x + tgt.w / 2);
+          const dy = (player.y + player.h / 2) - (tgt.y + tgt.h / 2);
+          const dist = Math.hypot(dx, dy);
+
+          tgt.timer += 0.02;
+
+          // Target runs away when player approaches!
+          if (dist < 110) {
+            tgt.vx = (dx > 0 ? -3.4 : 3.4);
+            if (Math.random() < 0.05) {
+              const quips = ['Catch me for appraisal! 📈', '404: Promotion not found!', 'Talk to HR! 📝', 'Overtime required! 💀'];
+              tgt.speech = quips[Math.floor(Math.random() * quips.length)];
+            }
+          } else {
+            tgt.vx *= 0.9;
+          }
+
+          tgt.x += tgt.vx;
+          tgt.x = Math.max(30, Math.min(630, tgt.x));
+
+          // When caught!
+          if (dist < 26) {
+            completeLevel(3);
+            return;
+          }
+        }
+
+        // Void death check (Immediate trigger when falling below platforms)
+        if (player.y > 292) {
+          killPlayer('Fell into the abyss.');
+          return;
+        }
+      }
+
+      // ========================================================
+      // RENDER CANVAS
+      // ========================================================
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Cyber Grid Background
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 34) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 34) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Render Platforms
+      if (levelData.platforms) {
+        levelData.platforms.forEach((p) => {
+          if (p.type === 'disappear' && p.vanished) return;
+          if (p.type === 'invisible' && !p.revealed) {
+            // Subtle shimmer
+            ctx.fillStyle = 'rgba(255, 51, 102, 0.06)';
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+            return;
+          }
+
+          // Platform Body
+          ctx.fillStyle = p.flash > 0 ? '#ff3366' : 'rgba(30, 30, 42, 0.92)';
+          ctx.beginPath();
+          ctx.roundRect(p.x, p.y, p.w, p.h, 6);
+          ctx.fill();
+
+          // Top Neon Highlight
+          ctx.strokeStyle = p.flash > 0 ? '#ffffff' : (p.type === 'moving' ? '#bd00ff' : '#00e676');
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(p.x + 4, p.y + 1);
+          ctx.lineTo(p.x + p.w - 4, p.y + 1);
+          ctx.stroke();
+        });
+      }
+
+      // Render Spring Pad (Level 2)
+      if (levelData.spring) {
+        const s = levelData.spring;
+        ctx.fillStyle = '#ffe082';
+        ctx.fillRect(s.x, s.y, s.w, s.h);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillText('☕', s.x + 7, s.y + 10);
+      }
+
+      // Render Doors & Checkpoints
+      if (levelData.door) {
+        const d = levelData.door;
+        ctx.fillStyle = '#00e676';
+        ctx.fillRect(d.x, d.y, d.w, d.h);
+        ctx.fillStyle = '#000';
+        ctx.font = '14px sans-serif';
+        ctx.fillText('🚪', d.x + 4, d.y + 26);
+      }
+
+      if (levelData.fakeDoor) {
+        const d = levelData.fakeDoor;
+        ctx.fillStyle = '#ff3366';
+        ctx.fillRect(d.x, d.y, d.w, d.h);
+        ctx.fillStyle = '#fff';
+        ctx.font = '14px sans-serif';
+        ctx.fillText('🚪', d.x + 4, d.y + 26);
+      }
+
+      if (levelData.realDoor) {
+        const d = levelData.realDoor;
+        ctx.fillStyle = '#00e676';
+        ctx.fillRect(d.x, d.y, d.w, d.h);
+        ctx.fillStyle = '#000';
+        ctx.font = '14px sans-serif';
+        ctx.fillText('🚪', d.x + 4, d.y + 26);
+      }
+
+      if (levelData.fakeCheckpoint) {
+        const fc = levelData.fakeCheckpoint;
+        ctx.font = '20px sans-serif';
+        ctx.fillText('🚩', fc.x, fc.y + 20);
+      }
+
+      // Render Target (Level 3)
+      if (levelData.target) {
+        const tgt = levelData.target;
+        ctx.font = '24px sans-serif';
+        ctx.fillText('🎯', tgt.x, tgt.y + 20);
+
+        // Speech Bubble
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.beginPath();
+        ctx.roundRect(tgt.x - 40, tgt.y - 18, 110, 16, 8);
+        ctx.fill();
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillText(tgt.speech, tgt.x - 34, tgt.y - 7);
+      }
+
+      // Render Player Character
+      ctx.save();
+      ctx.translate(player.x + player.w / 2, player.y + player.h / 2);
+      ctx.scale(player.facing, 1);
+
+      // Body / Suit
+      ctx.fillStyle = '#f0f0f5';
+      ctx.fillRect(-7, -12, 14, 18);
+
+      // Head
+      ctx.fillStyle = '#ffd1a4';
+      ctx.beginPath();
+      ctx.arc(0, -17, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eye
+      ctx.fillStyle = '#111';
+      ctx.fillRect(2, -19, 2, 3);
+
+      // Tie blowing in wind 👔
+      const tieWave = Math.sin(player.anim) * 4;
+      ctx.fillStyle = '#ff3366';
+      ctx.beginPath();
+      ctx.moveTo(-1, -12);
+      ctx.lineTo(2, -12);
+      ctx.lineTo(tieWave + 1, -2);
+      ctx.lineTo(-1, -4);
+      ctx.fill();
+
+      // Legs animation
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 3;
+      const legOffset = Math.sin(player.anim) * 5;
+      ctx.beginPath();
+      ctx.moveTo(-4, 6); ctx.lineTo(-4 - legOffset, 14);
+      ctx.moveTo(3, 6); ctx.lineTo(3 + legOffset, 14);
+      ctx.stroke();
+
+      ctx.restore();
+
+      // Render Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.life -= 0.035;
+        if (pt.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        ctx.fillStyle = pt.color;
+        ctx.globalAlpha = pt.life;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 3 * pt.life, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+      }
+
+      // Render Floating Sassy Texts
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y += ft.vy;
+        ft.alpha -= 0.025;
+        if (ft.alpha <= 0) {
+          floatingTexts.splice(i, 1);
+          continue;
+        }
+        ctx.fillStyle = ft.color;
+        ctx.globalAlpha = ft.alpha;
+        ctx.font = 'bold 12px "Space Grotesk", sans-serif';
+        ctx.fillText(ft.text, ft.x, ft.y);
+        ctx.globalAlpha = 1.0;
+      }
+
+      gameAnimId = requestAnimationFrame(gameLoop);
     }
+
+    gameAnimId = requestAnimationFrame(gameLoop);
   }
 }
 
