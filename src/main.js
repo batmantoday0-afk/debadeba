@@ -2563,15 +2563,47 @@ function setupOfficeRoastMission() {
         ctx.globalAlpha = ft.alpha;
         ctx.font = 'bold 12px "Space Grotesk", sans-serif';
         ctx.fillText(ft.text, ft.x, ft.y);
-        ctx.globalAlpha = 1.0;
-      }
-
-      gameAnimId = requestAnimationFrame(gameLoop);
+      ctx.globalAlpha = 1.0;
     }
 
     gameAnimId = requestAnimationFrame(gameLoop);
   }
 }
+}
+
+window.openPhotoModal = function(target) {
+  const photoModal = document.getElementById('photo-modal');
+  const photoModalImg = document.getElementById('photo-modal-img');
+  const photoModalName = document.getElementById('photo-modal-name');
+  const photoModalRole = document.getElementById('photo-modal-role');
+  if (!target || !photoModal) return;
+
+  const photoSrc = target.getAttribute('data-photo');
+  if (!photoSrc) return;
+
+  const nameText = target.querySelector('.team-name')?.innerText || target.innerText || 'Team Member';
+  const numText = target.querySelector('.team-num')?.innerText;
+
+  if (photoModalImg) photoModalImg.src = photoSrc;
+  if (photoModalName) photoModalName.innerText = nameText.trim();
+
+  if (photoModalRole) {
+    if (numText) {
+      photoModalRole.innerText = `TEAM DEBA DEBA • MEMBER ${numText}`;
+    } else {
+      photoModalRole.innerText = 'FOUNDER • CREATOR • MAKER';
+    }
+  }
+
+  photoModal.classList.remove('hidden');
+};
+
+window.closePhotoModal = function() {
+  const photoModal = document.getElementById('photo-modal');
+  if (photoModal) {
+    photoModal.classList.add('hidden');
+  }
+};
 
 // Start Deba Deba Engine
 init();
