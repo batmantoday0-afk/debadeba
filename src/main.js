@@ -2743,7 +2743,7 @@ window.handlePasswordSubmit = function(e) {
     if (errorMsg) {
       errorMsg.classList.remove('hidden');
       if (errorText) {
-        errorText.innerText = "Wrong password! Hint: Vamsi's Wi-Fi password 📶";
+        errorText.innerHTML = "🔐 <b>Hint:</b> The password is… well, <b>the password.</b> You can type it and open. 😂";
       }
     }
     if (inputWrap) inputWrap.classList.add('error');
@@ -2800,11 +2800,23 @@ function setupAntiInspectAndScreenshotProtection() {
     }
   }
 
-  // 1. Disable Right-Click Context Menu (Inspect)
+  function spawnRightClickDengey(x, y) {
+    const el = document.createElement('div');
+    el.className = 'dengey-popup';
+    el.innerText = 'Dengey.....';
+    el.style.left = `${x || window.innerWidth / 2}px`;
+    el.style.top = `${y || window.innerHeight / 2}px`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1250);
+  }
+
+  // 1. Right-Click: Display "Dengey....."
   window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    showSassyToast('🚫 Right click & Inspect are disabled! Nice try 😉', 2200);
+    spawnRightClickDengey(e.clientX, e.clientY);
+    showSassyToast('Dengey.....', 2200);
+    playAnimalSound('duck');
     triggerHaptic(40);
     return false;
   }, true);
