@@ -331,6 +331,9 @@ function init() {
   // Photo Reveal with Sarcastic Bios
   setupPhotoReveal();
 
+  // Password Gateway Access Control
+  setupPasswordGate();
+
   // Office Roast: Secret Mission Game Engine
   setupOfficeRoastMission();
 
@@ -1608,65 +1611,68 @@ function toggleMemeMode(forcedState = null) {
   }
 }
 
+let popupHideTimer = null;
+window.currentHoverMemberTarget = null;
+
 function setupPhotoReveal() {
   const popup = document.getElementById('photo-popup');
   const popupImg = document.getElementById('photo-popup-img');
   const popupName = document.getElementById('photo-popup-name');
   const popupRole = document.getElementById('photo-popup-role');
   const popupRoast = document.getElementById('photo-popup-roast');
-  const avatarWrapper = document.querySelector('.photo-avatar-wrapper');
 
   if (!popup || !popupImg) return;
 
-  // Clicking directly on the avatar in the popup flips between real and sarcastic photo!
-  if (avatarWrapper) {
-    avatarWrapper.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      toggleMemeMode();
-    });
-  }
-
   function showPhoto(e) {
     recordUserActivity();
-    const target = e.target.closest('[data-photo]');
+    if (popupHideTimer) {
+      clearTimeout(popupHideTimer);
+      popupHideTimer = null;
+    }
+
+    const target = e.target.closest('[data-member]') || e.target.closest('[data-photo]');
     if (!target) return;
 
+    window.currentHoverMemberTarget = target;
     const memberKey = target.dataset.member || 'sathwik';
     currentActiveMemberKey = memberKey;
+
     const memberData = TEAM_MEMBERS[memberKey] || {
-      name: target.innerText || 'Team Member',
-      role: 'Mystery Prodigy',
+      name: target.querySelector('.team-name')?.innerText || target.innerText || 'Team Member',
+      role: 'Team Member',
       sound: 'goat',
       soundLabel: '🐐 Mystery Beast',
-      realPhoto: target.dataset.photo || '/team/sathwik.jpeg',
-      sarcasticPhoto: '/team/sarcastic/' + (target.dataset.member || 'sathwik') + '.jpeg',
+      realPhoto: target.dataset.oldPhoto || `/team/${memberKey}.jpeg`,
+      sarcasticPhoto: `/team/sarcastic/${memberKey}.jpeg`,
       roast: 'Too mysterious to roast. Or just hiding from bugs.'
     };
 
-    e.preventDefault();
-    e.stopPropagation();
+    // Hover ALWAYS shows the old photo from public/team/ folder!
+    const oldPhotoSrc = target.dataset.oldPhoto || memberData.realPhoto || `/team/${memberKey}.jpeg`;
+    const targetPhoto = isMemeMode ? memberData.sarcasticPhoto : oldPhotoSrc;
 
-    // Select Real vs Sarcastic Meme Photo based on Cheat Code State
-    const targetPhoto = isMemeMode ? memberData.sarcasticPhoto : memberData.realPhoto;
     popupImg.src = targetPhoto;
-    popupImg.onerror = () => { popupImg.src = memberData.realPhoto; }; // Graceful fallback
+    popupImg.onerror = function() {
+      if (this.src !== oldPhotoSrc) {
+        this.src = oldPhotoSrc;
+      }
+    };
 
     if (popupName) popupName.innerText = memberData.name;
     if (popupRole) popupRole.innerText = memberData.role;
     if (popupRoast) popupRoast.innerText = `“${memberData.roast}”`;
 
-    // Play funny sarcastic animal voice
+    // Sarcastic animal voice
     if (memberData.sound) {
       playAnimalSound(memberData.sound);
     }
     triggerHaptic(40);
 
-    // Position the luxury card near the element
+    // Position popup card near the hovered element
     const rect = target.getBoundingClientRect();
-    const popupWidth = 320;
-    const popupHeight = 110;
-    const gap = 14;
+    const popupWidth = 330;
+    const popupHeight = 125;
+    const gap = 12;
 
     let left = rect.left + rect.width / 2 - popupWidth / 2;
     let top = rect.top - popupHeight - gap;
@@ -1677,7 +1683,7 @@ function setupPhotoReveal() {
 
     left = Math.max(12, Math.min(left, window.innerWidth - popupWidth - 12));
     if (top + popupHeight > window.innerHeight - 12) {
-      top = rect.top - popupHeight - gap;
+      top = Math.max(12, rect.top - popupHeight - gap);
     }
 
     popup.style.left = `${left}px`;
@@ -1686,22 +1692,63 @@ function setupPhotoReveal() {
   }
 
   function hidePhoto() {
+    if (popupHideTimer) {
+      clearTimeout(popupHideTimer);
+      popupHideTimer = null;
+    }
     popup.classList.remove('visible');
   }
 
-  const creditsOverlay = document.getElementById('credits-overlay');
-  if (!creditsOverlay) return;
+  function scheduleHidePhoto() {
+    if (popupHideTimer) clearTimeout(popupHideTimer);
+    popupHideTimer = setTimeout(() => {
+      popup.classList.remove('visible');
+    }, 180);
+  }
 
-  creditsOverlay.addEventListener('pointerdown', showPhoto);
-  creditsOverlay.addEventListener('pointerup', hidePhoto);
-  creditsOverlay.addEventListener('pointercancel', hidePhoto);
-  creditsOverlay.addEventListener('pointerleave', hidePhoto);
-  creditsOverlay.addEventListener('touchend', hidePhoto);
+  function cancelHidePhoto() {
+    if (popupHideTimer) {
+      clearTimeout(popupHideTimer);
+      popupHideTimer = null;
+    }
+  }
 
-  // Desktop hover triggers
-  document.querySelectorAll('[data-photo]').forEach((el) => {
+  // Hover and double-click triggers for all team items and founder
+  const triggerEls = document.querySelectorAll('[data-member], [data-photo]');
+  triggerEls.forEach((el) => {
     el.addEventListener('mouseenter', showPhoto);
-    el.addEventListener('mouseleave', hidePhoto);
+    el.addEventListener('mouseleave', scheduleHidePhoto);
+    // Double-click on name or row directly opens new photo modal
+    el.addEventListener('dblclick', (e) => {
+      e.stopPropagation();
+      window.openPhotoModal(el);
+    });
+  });
+
+  // Keeping mouse over popup prevents it from vanishing
+  popup.addEventListener('mouseenter', cancelHidePhoto);
+  popup.addEventListener('mouseleave', scheduleHidePhoto);
+
+  // Clicking or double-clicking on the hover popup directly opens the new photo modal window!
+  popup.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.currentHoverMemberTarget) {
+      window.openPhotoModal(window.currentHoverMemberTarget);
+    }
+  });
+
+  popup.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    if (window.currentHoverMemberTarget) {
+      window.openPhotoModal(window.currentHoverMemberTarget);
+    }
+  });
+
+  // Dismiss popup if tapping elsewhere
+  document.addEventListener('pointerdown', (e) => {
+    if (!e.target.closest('#photo-popup') && !e.target.closest('[data-member]') && !e.target.closest('[data-photo]')) {
+      hidePhoto();
+    }
   });
 }
 
@@ -2571,20 +2618,31 @@ function setupOfficeRoastMission() {
 }
 }
 
+// ==========================================================
+// FULL-SIZE PHOTO MODAL & WINDOW LOGIC
+// ==========================================================
 window.openPhotoModal = function(target) {
   const photoModal = document.getElementById('photo-modal');
   const photoModalImg = document.getElementById('photo-modal-img');
   const photoModalName = document.getElementById('photo-modal-name');
   const photoModalRole = document.getElementById('photo-modal-role');
+  const photoPopup = document.getElementById('photo-popup');
   if (!target || !photoModal) return;
 
-  const photoSrc = target.getAttribute('data-photo');
+  // Dismiss hover popup immediately
+  if (photoPopup) {
+    photoPopup.classList.remove('visible');
+  }
+
+  // Get the new photo from photos folder
+  const photoSrc = target.getAttribute('data-new-photo') || target.getAttribute('data-photo');
   if (!photoSrc) return;
 
   const nameText = target.querySelector('.team-name')?.innerText || target.innerText || 'Team Member';
   const numText = target.querySelector('.team-num')?.innerText;
 
   if (photoModalImg) {
+    photoModalImg.classList.remove('zoomed');
     photoModalImg.triedPhotos = false;
     photoModalImg.triedImages = false;
     photoModalImg.src = photoSrc;
@@ -2613,6 +2671,12 @@ window.openPhotoModal = function(target) {
   photoModal.classList.remove('hidden');
 };
 
+window.openPhotoModalFromPopup = function() {
+  if (window.currentHoverMemberTarget) {
+    window.openPhotoModal(window.currentHoverMemberTarget);
+  }
+};
+
 window.closePhotoModal = function() {
   const photoModal = document.getElementById('photo-modal');
   if (photoModal) {
@@ -2620,11 +2684,99 @@ window.closePhotoModal = function() {
   }
 };
 
+// Double-click on photo in modal to toggle zoom
+const modalImg = document.getElementById('photo-modal-img');
+if (modalImg) {
+  modalImg.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    modalImg.classList.toggle('zoomed');
+    triggerHaptic(50);
+  });
+}
+
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     window.closePhotoModal();
   }
 });
+
+// ==========================================================
+// PASSWORD GATEWAY AUTHENTICATION
+// ==========================================================
+window.handlePasswordSubmit = function(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('gate-password-input');
+  const gate = document.getElementById('password-gate');
+  const card = document.querySelector('.password-gate-card');
+  const errorMsg = document.getElementById('gate-error-msg');
+  const errorText = document.getElementById('gate-error-text');
+  const gateIcon = document.getElementById('gate-icon');
+  const inputWrap = document.querySelector('.gate-input-wrap');
+
+  if (!input || !gate) return false;
+
+  const enteredPassword = input.value.trim();
+
+  // Required password: "password"
+  if (enteredPassword.toLowerCase() === 'password') {
+    if (errorMsg) errorMsg.classList.add('hidden');
+    if (inputWrap) inputWrap.classList.remove('error');
+    if (card) card.classList.add('success');
+    if (gateIcon) gateIcon.innerText = '🔓';
+
+    showSassyToast('Access Granted! Welcome to Deba Deba.', 3200);
+    playHeartbeat(110, 0.25, 0.6);
+    triggerHaptic([40, 60, 100]);
+
+    setTimeout(() => {
+      gate.classList.add('unlocked');
+      startMusicOnUserGesture();
+      triggerZoom();
+    }, 400);
+
+    return false;
+  } else {
+    // Sarcastic error message for wrong password
+    if (errorMsg) {
+      errorMsg.classList.remove('hidden');
+      if (errorText) {
+        errorText.innerText = 'Wrong password! Hint: It is literally "password" 🤦‍♂️';
+      }
+    }
+    if (inputWrap) inputWrap.classList.add('error');
+    if (card) {
+      card.classList.remove('shake');
+      void card.offsetWidth; // Force re-flow
+      card.classList.add('shake');
+    }
+
+    playAnimalSound('duck');
+    triggerHaptic([80, 50, 80]);
+    input.select();
+    return false;
+  }
+};
+
+function setupPasswordGate() {
+  const input = document.getElementById('gate-password-input');
+  const eyeBtn = document.getElementById('toggle-password-vis');
+
+  if (eyeBtn && input) {
+    eyeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      eyeBtn.innerText = isPwd ? '🙈' : '👁️';
+      input.focus();
+    });
+  }
+
+  // Auto-focus input on page open
+  if (input) {
+    setTimeout(() => input.focus(), 250);
+  }
+}
 
 // Start Deba Deba Engine
 init();
