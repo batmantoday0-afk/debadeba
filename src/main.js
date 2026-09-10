@@ -334,6 +334,9 @@ function init() {
   // Password Gateway Access Control
   setupPasswordGate();
 
+  // Anti-Inspect & Screenshot Protection
+  setupAntiInspectAndScreenshotProtection();
+
   // Office Roast: Secret Mission Game Engine
   setupOfficeRoastMission();
 
@@ -2740,7 +2743,7 @@ window.handlePasswordSubmit = function(e) {
     if (errorMsg) {
       errorMsg.classList.remove('hidden');
       if (errorText) {
-        errorText.innerText = 'Wrong password! Hint: It is literally "password" 🤦‍♂️';
+        errorText.innerText = "Wrong password! Hint: Vamsi's Wi-Fi password 📶";
       }
     }
     if (inputWrap) inputWrap.classList.add('error');
@@ -2776,6 +2779,119 @@ function setupPasswordGate() {
   if (input) {
     setTimeout(() => input.focus(), 250);
   }
+}
+
+// ==========================================================
+// ANTI-INSPECT & SCREENSHOT DEFENSE SHIELD
+// ==========================================================
+function setupAntiInspectAndScreenshotProtection() {
+  const shield = document.getElementById('screenshot-shield');
+
+  function triggerScreenshotAlert() {
+    showSassyToast('📸 Screenshots are restricted on Deba Deba! Eyes on the screen.', 2800);
+    triggerHaptic([60, 40, 100]);
+    if (shield) {
+      shield.classList.remove('hidden');
+      setTimeout(() => shield.classList.add('hidden'), 1200);
+    }
+    // Wipe clipboard to prevent pasting screenshot
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText('🚫 Screenshots are disabled on Deba Deba! Keep your eyes on the screen. - Deba Deba Noir').catch(() => {});
+    }
+  }
+
+  // 1. Disable Right-Click Context Menu (Inspect)
+  window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    showSassyToast('🚫 Right click & Inspect are disabled! Nice try 😉', 2200);
+    triggerHaptic(40);
+    return false;
+  }, true);
+
+  // 2. Disable DevTools and Screenshot Shortcuts
+  window.addEventListener('keydown', (e) => {
+    const key = e.key ? e.key.toLowerCase() : '';
+    const code = e.keyCode || e.which;
+
+    // F12
+    if (e.key === 'F12' || code === 123) {
+      e.preventDefault();
+      e.stopPropagation();
+      showSassyToast('🔒 Developer tools are locked!', 2400);
+      return false;
+    }
+
+    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Inspect / Console)
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
+      e.preventDefault();
+      e.stopPropagation();
+      showSassyToast('🚫 Inspect Element is disabled!', 2400);
+      return false;
+    }
+
+    // Ctrl+U (View Source)
+    if ((e.ctrlKey || e.metaKey) && key === 'u') {
+      e.preventDefault();
+      e.stopPropagation();
+      showSassyToast('🚫 Source code viewing is disabled!', 2400);
+      return false;
+    }
+
+    // Ctrl+S (Save Page)
+    if ((e.ctrlKey || e.metaKey) && key === 's') {
+      e.preventDefault();
+      e.stopPropagation();
+      showSassyToast('🚫 Saving page is disabled!', 2400);
+      return false;
+    }
+
+    // Ctrl+P (Print / PDF)
+    if ((e.ctrlKey || e.metaKey) && key === 'p') {
+      e.preventDefault();
+      e.stopPropagation();
+      showSassyToast('🚫 Printing is disabled!', 2400);
+      return false;
+    }
+
+    // PrintScreen
+    if (e.key === 'PrintScreen' || code === 44) {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerScreenshotAlert();
+      return false;
+    }
+  }, true);
+
+  // 3. PrintScreen keyup fallback
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'PrintScreen' || e.keyCode === 44) {
+      triggerScreenshotAlert();
+    }
+  }, true);
+
+  // 4. Windows Snipping Tool / OS Screenshot Shield (triggers on window blur during capture)
+  window.addEventListener('blur', () => {
+    if (shield) {
+      shield.classList.remove('hidden');
+    }
+  });
+
+  window.addEventListener('focus', () => {
+    if (shield) {
+      shield.classList.add('hidden');
+    }
+  });
+
+  // 5. Disable dragging images
+  window.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+    return false;
+  });
+
+  // 6. Sarcastic Console Warning for DevTools
+  console.log('%cSTOP! 🛑', 'color: #ff3366; font-size: 45px; font-weight: 900;');
+  console.log('%cThis is a restricted zone. Developer tools and inspections are disabled on Deba Deba Noir.', 'font-size: 15px; color: #fff; font-weight: bold;');
 }
 
 // Start Deba Deba Engine

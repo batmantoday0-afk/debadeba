@@ -1742,3 +1742,82 @@ body.meme-mode .photo-pulse-ring {
 .gate-btn:hover .gate-btn-arrow {
   transform: translateX(4px);
 }
+
+/* ==========================================================
+   SCREENSHOT & SNIP PROTECTION SHIELD
+   ========================================================== */
+.screenshot-shield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999999;
+  background: rgba(4, 4, 6, 0.98);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s ease;
+  pointer-events: all;
+  padding: 1.5rem;
+}
+
+.screenshot-shield.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.screenshot-shield-content {
+  text-align: center;
+  max-width: 440px;
+  width: 100%;
+  padding: 2.2rem 2rem;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 51, 102, 0.15), rgba(10, 10, 14, 0.96));
+  border: 1.5px solid rgba(255, 51, 102, 0.4);
+  border-radius: 28px;
+  box-shadow: 0 0 60px rgba(255, 51, 102, 0.3), 0 25px 60px rgba(0, 0, 0, 0.95);
+  animation: gateCardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.screenshot-shield-icon {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 15px rgba(255, 51, 102, 0.6));
+}
+
+.screenshot-shield-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ff3366;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.screenshot-shield-sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.45;
+}
+
+/* Prevent image dragging */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* Blackout for printing / PDF export */
+@media print {
+  html, body {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
