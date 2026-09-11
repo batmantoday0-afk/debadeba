@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>debadeba.in — Sassy Noir Edition</title>
-  <meta name="description" content="DEBBA DEBBA — The hypersonic aesthetic void." />
+  <title>debadeba IT solutions</title>
+  <meta name="description" content="debadeba IT solutions — The hypersonic aesthetic void." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚫</text></svg>" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
-<body data-theme="obsidian">
+<body data-theme="graphite">
   <!-- 3D WebGL Canvas -->
   <div id="canvas-container"></div>
 
@@ -18,7 +18,7 @@
   <!-- Top Centered Sassy Whispers Toast HUD -->
   <div id="sassy-banner" class="sassy-banner">
     <span class="sassy-dot"></span>
-    <span id="sassy-text" class="sassy-text">Welcome! Try not to stare, it's rude.</span>
+    <span id="sassy-text" class="sassy-text">DEBBA DEBBA — Executive Graphite Edition. Unfiltered Reality.</span>
   </div>
 
   <!-- Floating Luxury Action Controls -->
@@ -31,8 +31,8 @@
 
     <!-- Mood Palette Toggle -->
     <button id="mood-toggle" class="control-btn mood-toggle" title="Switch Aesthetic Mood (or press M)">
-      <span id="mood-icon">🌑</span>
-      <span class="mood-badge" id="mood-badge">Void</span>
+      <span id="mood-icon">🔘</span>
+      <span class="mood-badge" id="mood-badge">Graphite</span>
     </button>
 
     <!-- Discreet Audio Toggle -->
@@ -43,7 +43,21 @@
 
   <!-- Mood Palette Selector Menu -->
   <div id="mood-menu" class="mood-menu hidden">
-    <div class="mood-option active" data-mood="obsidian">
+    <div class="mood-option active" data-mood="graphite">
+      <span class="mood-swatch swatch-graphite"></span>
+      <div class="mood-info">
+        <span class="mood-title">Graphite Slate</span>
+        <span class="mood-sub">Executive titanium & matte carbon</span>
+      </div>
+    </div>
+    <div class="mood-option" data-mood="graffiti">
+      <span class="mood-swatch swatch-graffiti"></span>
+      <div class="mood-info">
+        <span class="mood-title">Graffiti Studio</span>
+        <span class="mood-sub">Electric spray paint & urban rebellion</span>
+      </div>
+    </div>
+    <div class="mood-option" data-mood="obsidian">
       <span class="mood-swatch swatch-obsidian"></span>
       <div class="mood-info">
         <span class="mood-title">Obsidian Void</span>
@@ -85,10 +99,10 @@
       <!-- Mission Top HUD -->
       <div class="mission-hud">
         <div class="mission-badge">
-          <span class="mission-badge-icon">🕵️</span>
-          <span class="mission-badge-text">OFFICE ROAST • SECRET MISSION</span>
+          <span class="mission-badge-icon">😈</span>
+          <span class="mission-badge-text">OFFICE DEVIL — Roast Edition</span>
         </div>
-        <button id="mission-close-btn" class="mission-close-btn" title="Abort Mission">✕</button>
+        <button id="mission-close-btn" class="mission-close-btn" title="Close Game">✕</button>
       </div>
 
       <!-- Active Stage Viewport -->
@@ -177,7 +191,7 @@
       </div>
       <span class="gate-badge">RESTRICTED ACCESS</span>
       <h2 class="gate-title">Enter Password</h2>
-      <p class="gate-sub">Enter the secret passcode to access Deba Deba</p>
+      <p class="gate-sub">Enter the secret passcode to access debadeba IT solutions</p>
 
       <form id="password-gate-form" class="gate-form" onsubmit="return handlePasswordSubmit(event)">
         <div class="gate-input-wrap">
@@ -191,11 +205,10 @@
             required
             autofocus 
           />
-          <button type="button" id="toggle-password-vis" class="gate-eye-btn" title="Show / Hide Password">👁️</button>
         </div>
 
         <div id="gate-error-msg" class="gate-error-msg hidden">
-          <span id="gate-error-text">🔐 <b>Hint:</b> The password is… well, <b>the password.</b> You can type it and open. 😂</span>
+          <span id="gate-error-text">🔐 <b>Hint:</b> The password is… well, the password. You can type it and open. 😂</span>
         </div>
 
         <button type="submit" id="gate-submit-btn" class="gate-btn">
@@ -203,6 +216,34 @@
           <span class="gate-btn-arrow">→</span>
         </button>
       </form>
+    </div>
+
+    <!-- ==========================================================
+         CUMIN & CORIANDER SURVIVAL ADVISORY POP-UP MODAL
+         ========================================================== -->
+    <div id="coriander-popup" class="coriander-popup hidden" role="dialog" aria-modal="true" aria-labelledby="coriander-badge">
+      <div class="coriander-backdrop"></div>
+      <div class="coriander-card">
+        <div class="coriander-icon-frame">
+          <span class="coriander-icon">🌿⚠️💀</span>
+        </div>
+        <span class="coriander-badge" id="coriander-badge">SURVIVAL ADVISORY</span>
+        
+        <div class="coriander-body">
+          <p class="coriander-text">
+            <b>While this website is active, keep your cumin and coriander folded up and safely in your pocket… You never know what might happen. 😭😂</b>
+          </p>
+          <div class="coriander-signoff">
+            <p><b>Yours,</b></p>
+            <p><b>Your well-wishers.</b> 💀</p>
+          </div>
+        </div>
+
+        <button id="coriander-accept-btn" class="coriander-btn" type="button" onclick="handleAcceptWarning(event)">
+          <span>I Understand & Accept 💀</span>
+          <span class="gate-btn-arrow">→</span>
+        </button>
+      </div>
     </div>
   </div>
 

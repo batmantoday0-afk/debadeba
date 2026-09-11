@@ -54,6 +54,39 @@ let idleTimerInterval = null;
 // THEMES & COLOR PALETTES
 // ==========================================================
 const THEMES = {
+  graphite: {
+    name: 'Graphite Executive',
+    badge: 'Graphite',
+    icon: '🔘',
+    accent: '#94a3b8',
+    bg: 0x0e1015,
+    fog: 0x14171e,
+    ambientColor: 0xe2e8f0,
+    ambientIntensity: 1.05,
+    leftColor: 0xf8fafc,
+    leftIntensity: 2.3,
+    rightColor: 0x64748b,
+    rightIntensity: 2.1,
+    topColor: 0xffffff,
+    topIntensity: 2.4,
+    auraColor: 0x38bdf8,
+    auraIntensity: 2.4,
+    textMat: {
+      color: 0xdbe1e8,
+      emissive: 0x141820,
+      roughness: 0.16,
+      metalness: 0.82,
+      clearcoat: 1.0,
+    },
+    starColor: 0xcfd8dc,
+    sassyQuote: 'Graphite Executive. Sleek, matte, and undeniably more competent than management.',
+    sassyQuotes: [
+      'Graphite Executive. Sleek, matte, and undeniably more competent than management.',
+      'Graphite Precision. Aerospace-grade styling for people who pretend to write clean code.',
+      'Graphite Titanium. Minimalist luxury for those who charge $200/hr for CSS changes.',
+      'Graphite Edition. Understated, razor-sharp, and intimidatingly professional.'
+    ]
+  },
   obsidian: {
     name: 'Obsidian Void',
     badge: 'Void',
@@ -79,7 +112,12 @@ const THEMES = {
       clearcoat: 0.9,
     },
     starColor: 0xffffff,
-    sassyQuote: 'Obsidian Void. Deep black, just like your dark humor.'
+    sassyQuote: 'Obsidian Void. Pitch black, just like your career prospects.',
+    sassyQuotes: [
+      'Obsidian Void. Pitch black, just like your career prospects.',
+      'Obsidian Void. Deep dark void, perfectly matching your sense of humor.',
+      'Obsidian Void. The color of your soul after a Monday standup.'
+    ]
   },
   crimson: {
     name: 'Crimson Velvet',
@@ -106,7 +144,12 @@ const THEMES = {
       clearcoat: 1.0,
     },
     starColor: 0xff7799,
-    sassyQuote: 'Crimson Velvet. Spicy and dramatic. Don’t burn your fingers.'
+    sassyQuote: 'Crimson Velvet. Seductive ruby red. Did your code crash production again?',
+    sassyQuotes: [
+      'Crimson Velvet. Seductive ruby red. Did your code crash production again?',
+      'Crimson Velvet. Spicy and dramatic. Don’t burn your fragile fingers.',
+      'Crimson Velvet. As red as the unread notifications you’re actively avoiding.'
+    ]
   },
   cyber: {
     name: 'Cyber Amour',
@@ -133,7 +176,12 @@ const THEMES = {
       clearcoat: 1.0,
     },
     starColor: 0x00f0ff,
-    sassyQuote: 'Cyber Amour. Neon club vibes! Way too cool for you.'
+    sassyQuote: 'Cyber Amour. Neon purple. You definitely listen to synthwave while writing 0 code.',
+    sassyQuotes: [
+      'Cyber Amour. Neon purple. You definitely listen to synthwave while writing 0 code.',
+      'Cyber Amour. Neon club vibes! Way too cool for your daily reality.',
+      'Cyber Amour. Aesthetic 10/10, actual life stability 2/10.'
+    ]
   },
   gold: {
     name: 'Liquid Gold',
@@ -160,11 +208,178 @@ const THEMES = {
       clearcoat: 1.0,
     },
     starColor: 0xffe57f,
-    sassyQuote: 'Liquid Gold. Look at you feeling rich with $0 in your bank account.'
+    sassyQuote: 'Liquid Gold. Champagne luxury for someone with $4.17 in their savings account.',
+    sassyQuotes: [
+      'Liquid Gold. Champagne luxury for someone with $4.17 in their savings account.',
+      'Liquid Gold. Look at you feeling rich while your card gets declined at Subway.',
+      'Liquid Gold. Looks expensive, unlike your hourly wage.'
+    ]
+  },
+  graffiti: {
+    name: 'Graffiti Studio',
+    badge: 'Graffiti',
+    icon: '🎨',
+    accent: '#00f0ff',
+    bg: 0x0d0d12,
+    fog: 0x12121a,
+    ambientColor: 0xffffff,
+    ambientIntensity: 0.95,
+    leftColor: 0x00f0ff,
+    leftIntensity: 2.4,
+    rightColor: 0xff0055,
+    rightIntensity: 2.2,
+    topColor: 0xffe600,
+    topIntensity: 2.2,
+    auraColor: 0xbd00ff,
+    auraIntensity: 3.2,
+    textMat: {
+      color: 0xf0fdf4,
+      emissive: 0x002233,
+      roughness: 0.18,
+      metalness: 0.45,
+      clearcoat: 0.9,
+    },
+    starColor: 0x00f0ff,
+    sassyQuote: 'Graffiti Studio. Raw street art meets high-voltage neo-brutalism.',
+    sassyQuotes: [
+      'Graffiti Studio. Raw street art meets high-voltage neo-brutalism.',
+      'Graffiti Edition. Spray paint drips, neon stencils, and absolute creative chaos.',
+      'Graffiti Studio. Digital street culture curated with executive finesse.'
+    ]
   }
 };
 
-let currentThemeKey = 'obsidian';
+let currentThemeKey = 'graphite';
+
+// ==========================================================
+// 📸 EMPLOYEE PHOTO SYSTEM
+// Structure: each employee has normalPhoto and roastPhoto
+// Additional employees can easily be added here
+// ==========================================================
+export const employees = [
+  {
+    id: "employee1",
+    name: "Sathwik",
+    role: "Founder & Head of Drama",
+    normalPhoto: "images/employee1-normal.jpg",
+    roastPhoto: "images/employee1-roast.jpg",
+    roast: "Built this whole website just to avoid replying to messages.",
+    sound: "goat",
+    fallbackNormal: "/photos/sathwik.jpg",
+    fallbackRoast: "/team/sarcastic/sathwik.jpeg"
+  },
+  {
+    id: "employee2",
+    name: "Sathesh kumar",
+    role: "Chief Bug Creator",
+    normalPhoto: "images/employee2-normal.jpg",
+    roastPhoto: "images/employee2-roast.jpg",
+    roast: "Writes 2 lines of code, causes 15 errors, and blames the Wi-Fi.",
+    sound: "cat",
+    fallbackNormal: "/photos/sathesh.jpg",
+    fallbackRoast: "/team/sarcastic/sathesh.png"
+  },
+  {
+    id: "employee3",
+    name: "Vamsi",
+    role: "Non-Stop Yapper & Cringe Comedian 🎙️",
+    normalPhoto: "images/employee3-normal.jpg",
+    roastPhoto: "images/employee3-roast.jpg",
+    roast: "Never shuts his mouth and tells the worst jokes in human history.",
+    sound: "duck",
+    fallbackNormal: "/photos/vamsi.jpg",
+    fallbackRoast: "/team/sarcastic/vamsi.jpeg"
+  },
+  {
+    id: "employee4",
+    name: "Ashwini",
+    role: "Merge Conflict Queen",
+    normalPhoto: "images/employee4-normal.jpg",
+    roastPhoto: "images/employee4-roast.jpg",
+    roast: "Tries to merge two simple branches, but ends up breaking git itself.",
+    sound: "chicken",
+    fallbackNormal: "/photos/amrutha.jpg",
+    fallbackRoast: "/team/sarcastic/ashwini.jpeg"
+  },
+  {
+    id: "employee5",
+    name: "viswanath",
+    role: "Simulation Lead & Demo Destroyer 💥",
+    normalPhoto: "images/employee5-normal.jpg",
+    roastPhoto: "images/employee5-roast.jpg",
+    roast: "Spends weeks building simulations. Crashes the exact second the demo starts.",
+    sound: "owl",
+    fallbackNormal: "/photos/viswanath.jpg",
+    fallbackRoast: "/team/sarcastic/viswanath.jpeg"
+  },
+  {
+    id: "employee6",
+    name: "steel Binde",
+    role: "High BP & Salty Queen 🧂",
+    normalPhoto: "images/employee6-normal.jpg",
+    roastPhoto: "images/employee6-roast.jpg",
+    roast: "Eats extra salt just to stay angry. One tiny bug and her blood pressure shoots to outer space.",
+    sound: "cow",
+    fallbackNormal: "/photos/bindu.jpg",
+    fallbackRoast: "/team/sarcastic/steelbinde.jpeg"
+  },
+  {
+    id: "employee7",
+    name: "Aakash",
+    role: "Master of Procrastination",
+    normalPhoto: "images/employee7-normal.jpg",
+    roastPhoto: "images/employee7-roast.jpg",
+    roast: "Starts working 5 minutes before the deadline and calls it 'passion'.",
+    sound: "monkey",
+    fallbackNormal: "/photos/aakash.jpg",
+    fallbackRoast: "/team/sarcastic/aakash.jpeg"
+  },
+  {
+    id: "employee8",
+    name: "harshith",
+    role: "Pixel Perfectionist (Blind) 🔍",
+    normalPhoto: "images/employee8-normal.jpg",
+    roastPhoto: "images/employee8-roast.jpg",
+    roast: "Spends 5 days adjusting a 1px border that nobody in the world will ever notice.",
+    sound: "cat",
+    fallbackNormal: "/photos/harshith.jpg",
+    fallbackRoast: "/team/sarcastic/harshith.jpeg"
+  },
+  {
+    id: "employee9",
+    name: "Harshitha",
+    role: "Tire Pressure Destroyer 🛞",
+    normalPhoto: "images/employee9-normal.jpg",
+    roastPhoto: "images/employee9-roast.jpg",
+    roast: "Google Maps doesn’t calculate her route… It calculates the bridge load capacity 😂",
+    sound: "cow",
+    fallbackNormal: "/photos/harshitha.jpg",
+    fallbackRoast: "/team/sarcastic/harshitha.jpeg"
+  },
+  {
+    id: "employee10",
+    name: "Muni sankar",
+    role: "Monaaa’s #1 Fan 💖",
+    normalPhoto: "images/employee10-normal.jpg",
+    roastPhoto: "images/employee10-roast.jpg",
+    roast: "Types code with one hand while writing love letters to Monaaa with the other.",
+    sound: "frog",
+    fallbackNormal: "/photos/muni sankar.jpg",
+    fallbackRoast: "/team/sarcastic/munisankar.jpeg"
+  },
+  {
+    id: "employee11",
+    name: "Hema sri",
+    role: "Sephora VIP Ambassador 💄",
+    normalPhoto: "images/employee11-normal.jpg",
+    roastPhoto: "images/employee11-roast.jpg",
+    roast: "Spends 2 hours putting on makeup for a 3-minute meeting where everyone has their camera turned off.",
+    sound: "lion",
+    fallbackNormal: "/photos/hema.jpg",
+    fallbackRoast: "/team/sarcastic/hemasri.jpeg"
+  }
+];
+window.employees = employees;
 
 // ==========================================================
 // TEAM ROASTS & CHEEKY BIOS
@@ -279,8 +494,9 @@ function init() {
 
   // Scene
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(THEMES.obsidian.bg);
-  scene.fog = new THREE.Fog(THEMES.obsidian.fog, 10, 750);
+  const initTheme = THEMES[currentThemeKey];
+  scene.background = new THREE.Color(initTheme.bg);
+  scene.fog = new THREE.Fog(initTheme.fog, 10, 750);
 
   // Camera
   camera = new THREE.PerspectiveCamera(
@@ -352,7 +568,7 @@ function init() {
 // STUDIO LIGHTING SETUP
 // ==========================================================
 function setupStudioLighting() {
-  const t = THEMES.obsidian;
+  const t = THEMES[currentThemeKey];
 
   ambientLight = new THREE.AmbientLight(t.ambientColor, t.ambientIntensity);
   scene.add(ambientLight);
@@ -390,7 +606,7 @@ function createSpeedDust() {
 
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   starsMaterial = new THREE.PointsMaterial({
-    color: THEMES.obsidian.starColor,
+    color: THEMES[currentThemeKey].starColor,
     size: 0.16,
     transparent: true,
     opacity: 0.45,
@@ -554,7 +770,9 @@ function applyTheme(themeKey, notify = true) {
   }
 
   if (notify) {
-    showSassyToast(t.sassyQuote, 3000);
+    const quotes = t.sassyQuotes || (t.sassyQuote ? [t.sassyQuote] : []);
+    const quote = quotes.length > 0 ? quotes[Math.floor(Math.random() * quotes.length)] : '';
+    showSassyToast(quote, 3000);
   }
 }
 
@@ -615,14 +833,24 @@ function setupAudio() {
         isMusicPlaying = true;
         audioBtn.classList.remove('muted');
         audioIcon.innerText = '🎵';
-        showSassyToast('Music on! Try not to dance too hard.', 2500);
+        const musicOnQuips = [
+          'Music on! Try not to headbang directly into your monitor.',
+          'Beats activated. Prepare your eardrums for peak corporate chaos.',
+          'Soundtrack on! Now you can procrastinate with rhythmic enthusiasm.'
+        ];
+        showSassyToast(musicOnQuips[Math.floor(Math.random() * musicOnQuips.length)], 2600);
       }).catch(() => {});
     } else {
       bgMusic.muted = !bgMusic.muted;
       if (bgMusic.muted) {
         audioBtn.classList.add('muted');
         audioIcon.innerText = '🔇';
-        showSassyToast('Muted? Wow, you must be really fun at parties.', 2200);
+        const musicOffQuips = [
+          'Muted? Wow, having fun is strictly illegal in your household, huh?',
+          'Muted? Complete silence won’t drown out your inner thoughts, but okay.',
+          'Muting the vibe? You must be the absolute life of the funeral.'
+        ];
+        showSassyToast(musicOffQuips[Math.floor(Math.random() * musicOffQuips.length)], 2600);
       } else {
         audioBtn.classList.remove('muted');
         audioIcon.innerText = '🎵';
@@ -1008,16 +1236,32 @@ function showSassyToast(message, duration = 3200) {
 function setupSassyEngine() {
   // Initial Arrival Toast
   setTimeout(() => {
-    showSassyToast('Welcome! Try not to stare, it’s rude.', 3500);
+    const welcomeQuips = [
+      'Welcome to DEBBA DEBBA — Executive Graphite Edition. Luxury aesthetics, zero excuses.',
+      'Welcome to DEBBA DEBBA. Please lower your expectations immediately.',
+      'Graphite Executive activated. Aerospace precision meets corporate reality.',
+      'Welcome! Staring is free, but your wasted time won’t be refunded.',
+      'Welcome! Try not to stare too hard, it’s rude and embarrassing.',
+      'Welcome to the void. We guarantee absolute zero productivity here.',
+      'You actually visited this site? Don’t you have real work to finish?'
+    ];
+    showSassyToast(welcomeQuips[Math.floor(Math.random() * welcomeQuips.length)], 3500);
   }, 1200);
 
   // Idle Sassy Quip Watcher (triggers if no interaction for 9s)
   const idleQuips = [
-    'Are you asleep or just staring at a black screen for fun?',
-    'Hello? Anyone home? Touch the screen already.',
-    'Staring at this won’t fix your life problems, tap something!',
-    'Did you freeze, or is your Wi-Fi as slow as you are?',
-    'Don’t just sit there... poke the screen!'
+    'Staring at the void won’t fix your life or make your crush text back.',
+    'Did your brain crash, or are you buffering in 144p resolution? 🔄',
+    'Hello? Breathing check? Tap the screen before we call an ambulance.',
+    'Staring at this won’t get you promoted, bro. Do something.',
+    'Are you being paid by the hour to just stare blankly at this screen?',
+    'Even our 404 page has more brain activity than you right now.',
+    'Still frozen? Your boss thinks you’re typing furiously right now.',
+    'Blink twice if you’re currently stuck in an existential dread loop.',
+    'Don’t just sit there drooling on your keyboard... tap something!',
+    'Legend says if you stare long enough, you might find a single brain cell.',
+    'Your Wi-Fi might be fast, but your reaction time definitely isn’t.',
+    'Are you waiting for the text to do a backflip? Poke the screen!'
   ];
 
   idleTimerInterval = setInterval(() => {
@@ -1186,7 +1430,13 @@ function setupInteractions() {
       isPressing = false;
       triggerHaptic([60, 40, 140]);
       playHeartbeat(85, 0.25, 0.6);
-      showSassyToast('Double tap! Someone is aggressive today.', 2500);
+      const doubleTapQuips = [
+        'Double tap! Who hurt you? Therapy is cheaper than a new screen.',
+        'Calm down, Hulk. It’s just 3D text, not your sworn enemy.',
+        'Aggressive double tapping detected. Take a deep breath, champ.',
+        'Double tapped! Your anger management counselor would be thrilled.'
+      ];
+      showSassyToast(doubleTapQuips[Math.floor(Math.random() * doubleTapQuips.length)], 2800);
       shatterAndRevealCredits();
       return;
     }
@@ -1205,7 +1455,12 @@ function setupInteractions() {
         lastVibrateStep = 0;
         lastHoldToastStep = 0;
         playHeartbeat(58, 0.2, 0.35);
-        showSassyToast('Ooh, getting brave... keep holding!', 2000);
+        const holdStartQuips = [
+          'Ooh, look at Mr. Strong Finger... don’t chicken out now!',
+          'Tension building... keep holding or forever be known as weak.',
+          'Hold it down! Let’s see if your attention span lasts 0.6 seconds.'
+        ];
+        showSassyToast(holdStartQuips[Math.floor(Math.random() * holdStartQuips.length)], 2000);
       }
     }, 420);
   });
@@ -1234,7 +1489,13 @@ function setupInteractions() {
         textContainer.position.set(0, 0, TARGET_Z);
         textContainer.rotation.set(0, 0, 0);
       }
-      showSassyToast('Letting go already? Weak.', 2000);
+      const releaseQuips = [
+        'Letting go already? Classic commitment issues.',
+        'Weak grip. Couldn’t even hold down a click for half a second.',
+        'Gave up already? No wonder your projects are never finished on time.',
+        'Cowardly release detected. Try having some backbone next time.'
+      ];
+      showSassyToast(releaseQuips[Math.floor(Math.random() * releaseQuips.length)], 2500);
       return;
     }
 
@@ -1245,10 +1506,14 @@ function setupInteractions() {
         if (tapCount === 1 && !isPressing && !hasCracked) {
           triggerZoom();
           const singleTapQuips = [
-            'Is that all you got? My grandma taps harder than that.',
-            'Why are you poking me? Hold it down!',
-            'That tickles. Press harder or go home.',
-            'Stop tapping like a bird and hold the screen!'
+            'Is that a tap or did a housefly gently sneeze on the screen?',
+            'Weakest tap in human history. Put some protein in your diet.',
+            'Stop timidly poking me like I’m hot soup. Press and HOLD it!',
+            'My grandma taps harder than that while rejecting spam calls.',
+            'Are you scared you’ll break a nail? Hold it down like an adult.',
+            'Tapping like a confused pigeon... hold the screen down already!',
+            'That gentle tickle won’t do anything. Put some backbone into it!',
+            'Poke, poke, poke... is this your entire strategy in life?'
           ];
           showSassyToast(singleTapQuips[Math.floor(Math.random() * singleTapQuips.length)], 2800);
         }
@@ -1267,7 +1532,12 @@ function setupInteractions() {
       recordUserActivity();
       triggerHaptic([60, 40, 140]);
       playHeartbeat(80, 0.25, 0.5);
-      showSassyToast('Look at you, clicking secret buttons like a hacker.', 2500);
+      const secretQuips = [
+        'Ooh, found the secret corner button? Someone give this 1337 hacker a medal.',
+        'Clicking suspicious buttons in dark corners? You’d fall for phishing so fast.',
+        'Sneaky click detected. You really have way too much free time on your hands.'
+      ];
+      showSassyToast(secretQuips[Math.floor(Math.random() * secretQuips.length)], 2600);
       shatterAndRevealCredits();
     });
   }
@@ -1303,7 +1573,12 @@ function setupInteractions() {
       recordUserActivity();
       triggerHaptic([60, 40, 140]);
       playHeartbeat(80, 0.25, 0.5);
-      showSassyToast('Keyboard shortcuts? Look at mister fancy pants.', 2500);
+      const shortcutQuips = [
+        'Keyboard shortcuts? Look at mister elite programmer pretending to work.',
+        'Pro keyboard shortcut user detected. Someone notify Silicon Valley.',
+        'Hitting random keys to look busy in the office? We respect the hustle.'
+      ];
+      showSassyToast(shortcutQuips[Math.floor(Math.random() * shortcutQuips.length)], 2600);
       shatterAndRevealCredits();
     }
   });
@@ -1403,7 +1678,13 @@ function shatterAndRevealCredits() {
     activeShards.push(mesh);
   }
 
-  showSassyToast('Great, you broke it. Hope your mom is proud.', 3500);
+  const shatterQuips = [
+    'Great, you shattered the universe. Hope your mom is proud.',
+    'Look what you did. Put "Destruction Specialist" on your LinkedIn now.',
+    'Congratulations, you completely broke it. This is why we can’t have nice things.',
+    'Total structural collapse. Are you happy now, chaos goblin?'
+  ];
+  showSassyToast(shatterQuips[Math.floor(Math.random() * shatterQuips.length)], 3500);
 
   // Reveal Credits Overlay
   setTimeout(() => {
@@ -1455,9 +1736,18 @@ function returnToVoid() {
   triggerZoom();
 
   const returnQuips = [
-    'Back already? Missed me that much?',
-    'You couldn’t stay away, could you?',
-    'Resetting everything because you asked so nicely.'
+    'Back already? Missed me that much? Go touch some grass. 🌱',
+    'Couldn’t survive 5 seconds without staring at DEBBA DEBBA? Obsessed.',
+    'Aww, did the real world scare you? Welcome back to the void, coward.',
+    'Back already? Your weekly screen time report is going to be humiliating.',
+    'Look who crawled back! Nobody even noticed you left, but welcome.',
+    'Couldn’t find anything better to do with your life? Expected.',
+    'Back so soon? Did HR reject your resignation letter already? 📝',
+    'Resetting the void for you. Try not to break it again in 3 seconds.',
+    'Back already? We were actually enjoying the peaceful silence.',
+    'Returned to the scene of the crime? We all saw you break it.',
+    'Back again? Your dopamine receptors are truly beyond repair.',
+    'Rebuilding the void because someone can’t handle an existential crisis.'
   ];
   showSassyToast(returnQuips[Math.floor(Math.random() * returnQuips.length)], 3200);
 }
@@ -1503,7 +1793,7 @@ function animate(currentTime) {
         // Sassy hold-tension whispers
         if (progress > 0.65 && lastHoldToastStep === 0) {
           lastHoldToastStep = 1;
-          showSassyToast('Hold tight! It’s gonna blow!', 1800);
+          showSassyToast('HOLD TIGHT! Critical meltdown imminent! Don’t wimp out!', 1800);
         }
 
         if (progress >= 1) {
@@ -1579,20 +1869,42 @@ function onWindowResize() {
 // ==========================================================
 // MEME MODE CHEAT ENGINE & PHOTO REVEAL SYSTEM
 // ==========================================================
+let isRoastModeUnlocked = false;
 let isMemeMode = false;
 let cheatBuffer = '';
 let currentActiveMemberKey = null;
 
 function toggleMemeMode(forcedState = null) {
+  if (!isRoastModeUnlocked) {
+    const lockedQuips = [
+      '🔒 Nice try! Roast Mode is locked. You gotta earn the disrespect in OFFICE DEVIL first.',
+      '🔒 Access denied! Beat Level 3 in OFFICE DEVIL before unlocking the emotional damage.',
+      '🔒 Locked tight! Go defeat the OFFICE DEVIL before trying to look at forbidden roasts.'
+    ];
+    showSassyToast(lockedQuips[Math.floor(Math.random() * lockedQuips.length)], 3400);
+    playAnimalSound('duck');
+    triggerHaptic([60, 40]);
+    return;
+  }
   isMemeMode = (forcedState !== null) ? forcedState : !isMemeMode;
-  document.body.classList.toggle('meme-mode', isMemeMode);
+  document.body.classList.toggle('meme-mode', isMemeMode && isRoastModeUnlocked);
 
-  if (isMemeMode) {
-    showSassyToast('🔥 CHEAT UNLOCKED: Sarcastic Meme Mode Active! Tap photos to flip.', 3800);
+  if (isMemeMode && isRoastModeUnlocked) {
+    const unlockedQuips = [
+      '🔥 OFFICE ROAST MODE ACTIVATED: Prepare your feelings to be permanently hurt.',
+      '🔥 Sarcastic Photos Unlocked! Warning: Zero HR compliance beyond this point.',
+      '🔥 Meme Mode engaged! Tap photos to flip between fake professionalism and pure slander.'
+    ];
+    showSassyToast(unlockedQuips[Math.floor(Math.random() * unlockedQuips.length)], 3800);
     playAnimalSound('monkey');
     triggerHaptic([50, 50, 100]);
   } else {
-    showSassyToast('😇 Normal Real Photos Restored.', 2500);
+    const restoredQuips = [
+      '😇 Normal Real Photos Restored. Cowardly retreat back to corporate politeness.',
+      '😇 Back to professional mode. Pretending we are civilized colleagues again.',
+      '😇 Normal photos restored. HR has entered the chat.'
+    ];
+    showSassyToast(restoredQuips[Math.floor(Math.random() * restoredQuips.length)], 2800);
     triggerHaptic([40]);
   }
 
@@ -1605,7 +1917,7 @@ function toggleMemeMode(forcedState = null) {
     if (popupImg && avatarWrapper) {
       avatarWrapper.classList.add('flipping');
       setTimeout(() => {
-        const nextSrc = isMemeMode ? memberData.sarcasticPhoto : memberData.realPhoto;
+        const nextSrc = (isMemeMode && isRoastModeUnlocked) ? memberData.sarcasticPhoto : memberData.realPhoto;
         popupImg.src = nextSrc;
         popupImg.onerror = () => { popupImg.src = memberData.realPhoto; };
         setTimeout(() => avatarWrapper.classList.remove('flipping'), 200);
@@ -1650,9 +1962,10 @@ function setupPhotoReveal() {
       roast: 'Too mysterious to roast. Or just hiding from bugs.'
     };
 
-    // Hover ALWAYS shows the old photo from public/team/ folder!
+    // The sarcastic photo must NOT be visible initially.
+    // Hover shows normal photo unless Level 3 was beaten!
     const oldPhotoSrc = target.dataset.oldPhoto || memberData.realPhoto || `/team/${memberKey}.jpeg`;
-    const targetPhoto = isMemeMode ? memberData.sarcasticPhoto : oldPhotoSrc;
+    const targetPhoto = (isRoastModeUnlocked && isMemeMode) ? memberData.sarcasticPhoto : oldPhotoSrc;
 
     popupImg.src = targetPhoto;
     popupImg.onerror = function() {
@@ -1756,7 +2069,7 @@ function setupPhotoReveal() {
 }
 
 // ==========================================================
-// 🕵️ LEVEL 1, 2, 3 TROLL PLATFORMER & OFFICE ROAST ENGINE
+// 😈 OFFICE DEVIL — ROAST EDITION (LEVEL DEVIL TROLL ENGINE)
 // ==========================================================
 function setupOfficeRoastMission() {
   const pixelBtn = document.getElementById('suspicious-pixel');
@@ -1770,8 +2083,38 @@ function setupOfficeRoastMission() {
   let deathsCount = 0;
   let gameRunning = false;
   let gameAnimId = null;
-  let currentShowcaseMemberIndex = 0;
-  const memberKeys = Object.keys(TEAM_MEMBERS);
+  let currentShowcaseIndex = 0;
+  let isLevelTransitioning = false;
+  let levelTransitionTimer = null;
+  let activeCleanupKeyListeners = null;
+
+  const TROLL_DEATH_MESSAGES = [
+    "You trusted the floor. Rookie mistake.",
+    "Gravity says hello.",
+    "That platform had other plans.",
+    "Congratulations. You lost to a rectangle.",
+    "That looked easier in your imagination.",
+    "The floor has resigned.",
+    "Gravity remains undefeated.",
+    "You had ONE job.",
+    "That wasn't a bug. That was personal.",
+    "The game saw you coming.",
+    "Nice jump. Wrong universe.",
+    "You trusted the EXIT sign. 😂",
+    "Even the NPC is disappointed.",
+    "HR has been notified.",
+    "Productivity detected. This is unusual."
+  ];
+
+  // Screen shake on major troll events
+  function triggerScreenShake() {
+    const box = document.getElementById('troll-canvas-box') || document.querySelector('.troll-canvas-container');
+    if (box) {
+      box.classList.remove('screen-shake');
+      void box.offsetWidth;
+      box.classList.add('screen-shake');
+    }
+  }
 
   // Audio Synthesizers
   function playSound(type) {
@@ -1855,6 +2198,17 @@ function setupOfficeRoastMission() {
         gain.connect(audioCtx.destination);
         osc.start(t);
         osc.stop(t + 0.45);
+      } else if (type === 'blip') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, t);
+        gain.gain.setValueAtTime(0.1, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.05);
       }
     } catch (_) {}
   }
@@ -1863,16 +2217,39 @@ function setupOfficeRoastMission() {
     recordUserActivity();
     deathsCount = 0;
     currentLevel = 1;
+    if (levelTransitionTimer) {
+      clearTimeout(levelTransitionTimer);
+      levelTransitionTimer = null;
+    }
+    isLevelTransitioning = false;
     overlay.classList.remove('hidden');
     playSound('jump');
-    showSassyToast('🕵️ MISSION INITIATED: Good luck, you will need it.', 3000);
+    const devilQuips = [
+      '😈 OFFICE DEVIL: Entering the arena. Try not to rage-quit within 10 seconds.',
+      '😈 Welcome to the corporate grinder. Hope your emotional resilience is high.',
+      '😈 OFFICE DEVIL: Good luck, you will definitely need a miracle.'
+    ];
+    showSassyToast(devilQuips[Math.floor(Math.random() * devilQuips.length)], 3200);
     startPlatformerGame();
   }
 
   function closeMission() {
     overlay.classList.add('hidden');
+    overlay.classList.remove('screen-darken');
     gameRunning = false;
-    if (gameAnimId) cancelAnimationFrame(gameAnimId);
+    if (gameAnimId) {
+      cancelAnimationFrame(gameAnimId);
+      gameAnimId = null;
+    }
+    if (levelTransitionTimer) {
+      clearTimeout(levelTransitionTimer);
+      levelTransitionTimer = null;
+    }
+    isLevelTransitioning = false;
+    if (activeCleanupKeyListeners) {
+      activeCleanupKeyListeners();
+      activeCleanupKeyListeners = null;
+    }
   }
 
   pixelBtn.addEventListener('click', (e) => {
@@ -1888,16 +2265,46 @@ function setupOfficeRoastMission() {
     }
   });
 
+  // Secret shortcut trigger: press ✨ button or type 'devil' / 'troll'
+  const secretTrigger = document.getElementById('secret-trigger');
+  if (secretTrigger) {
+    secretTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openMission();
+    });
+  }
+
   // ========================================================
   // 🎮 2D PLATFORMER CORE ENGINE
   // ========================================================
   function startPlatformerGame() {
+    const levelMeta = {
+      1: {
+        pill: 'LEVEL 1',
+        name: 'JUST WALK 🚶',
+        sub: '“How hard can this be?”'
+      },
+      2: {
+        pill: 'LEVEL 2',
+        name: 'TRUST NOTHING 💀',
+        sub: '“Everything is probably lying.”'
+      },
+      3: {
+        pill: 'FINAL LEVEL',
+        name: 'THE EMPLOYEE TEST 💀',
+        sub: '“Complete this and you\'ll discover something you probably shouldn\'t.”'
+      }
+    };
+
     stageBox.innerHTML = `
       <div class="troll-game-wrapper">
         <div class="troll-hud">
-          <div class="troll-level-title">
-            <span class="troll-level-pill" id="troll-level-pill">LEVEL ${currentLevel}</span>
-            <span id="troll-level-name">“JUST WALK”</span>
+          <div class="troll-level-header">
+            <div class="troll-level-title">
+              <span class="troll-level-pill" id="troll-level-pill">${levelMeta[currentLevel].pill}</span>
+              <span id="troll-level-name">${levelMeta[currentLevel].name}</span>
+            </div>
+            <span id="troll-level-sub" class="troll-level-sub">${levelMeta[currentLevel].sub}</span>
           </div>
           <div class="troll-stats">
             <span class="troll-deaths" id="troll-deaths">💀 Fails: 0</span>
@@ -1923,15 +2330,25 @@ function setupOfficeRoastMission() {
 
     const canvas = document.getElementById('troll-game-canvas');
     const ctx = canvas.getContext('2d');
+    function drawRoundRect(x, y, w, h, r = 6) {
+      if (typeof ctx.roundRect === 'function') {
+        try {
+          ctx.roundRect(x, y, w, h, r);
+          return;
+        } catch (_) {}
+      }
+      ctx.rect(x, y, w, h);
+    }
     const deathsEl = document.getElementById('troll-deaths');
     const levelPill = document.getElementById('troll-level-pill');
     const levelName = document.getElementById('troll-level-name');
+    const levelSub = document.getElementById('troll-level-sub');
     const bannerSlot = document.getElementById('troll-banner-slot');
     const retryBtn = document.getElementById('troll-retry-btn');
 
     const keys = { left: false, right: false, jump: false };
     let player = {
-      x: 40, y: 230, vx: 0, vy: 0,
+      x: 35, y: 230, vx: 0, vy: 0,
       w: 18, h: 28, isGrounded: false,
       coyote: 0, facing: 1, anim: 0,
       isDying: false
@@ -1941,70 +2358,115 @@ function setupOfficeRoastMission() {
     let particles = [];
     let floatingTexts = [];
 
-    const levelTitles = {
-      1: { name: '“JUST WALK”', sub: 'Easy, right? Just walk to the exit.' },
-      2: { name: '“TRUST NOTHING”', sub: 'Trust issues guaranteed.' },
-      3: { name: '“THE EMPLOYEE TEST” 💀', sub: 'The ultimate corporate gauntlet.' }
-    };
-
     function loadLevel(lvl) {
+      if (levelTransitionTimer) {
+        clearTimeout(levelTransitionTimer);
+        levelTransitionTimer = null;
+      }
+      isLevelTransitioning = false;
+
       currentLevel = lvl;
-      if (levelPill) levelPill.innerText = `LEVEL ${lvl}`;
-      if (levelName) levelName.innerText = levelTitles[lvl].name;
+      keys.left = false;
+      keys.right = false;
+      keys.jump = false;
+      if (levelPill) levelPill.innerText = levelMeta[lvl].pill;
+      if (levelName) levelName.innerText = levelMeta[lvl].name;
+      if (levelSub) levelSub.innerText = levelMeta[lvl].sub;
+      if (bannerSlot) bannerSlot.innerHTML = '';
       particles = [];
       floatingTexts = [];
       player.isDying = false;
 
       if (lvl === 1) {
-        player.x = 40; player.y = 230; player.vx = 0; player.vy = 0;
+        player.x = 35; player.y = 230; player.vx = 0; player.vy = 0;
         levelData = {
           platforms: [
-            { x: 20, y: 280, w: 100, h: 22, type: 'normal' },
-            { x: 160, y: 280, w: 85, h: 22, type: 'disappear', vanished: false, flash: 0 },
-            { x: 280, y: 250, w: 80, h: 22, type: 'falling', triggered: false, vy: 0 },
-            { x: 220, y: 180, w: 60, h: 18, type: 'normal' },
-            { x: 380, y: 200, w: 80, h: 18, type: 'normal' },
-            { x: 500, y: 260, w: 160, h: 24, type: 'normal' }
+            { x: 15, y: 275, w: 90, h: 22, type: 'normal' },
+            // Troll 1: First platform looks completely safe but vanishes on step
+            { x: 125, y: 275, w: 75, h: 22, type: 'disappear', vanished: false, flash: 0 },
+            // Troll 2: Platform moves sideways when player approaches
+            { x: 225, y: 260, w: 75, h: 22, type: 'dodge', targetX: 225, dodged: false },
+            // Troll 3: Surprise invisible platform in impossible gap
+            { x: 375, y: 235, w: 80, h: 20, type: 'surprise', revealed: false },
+            // Landing platform after fake wall
+            { x: 460, y: 260, w: 110, h: 22, type: 'normal' },
+            // Far platform where moving door flees to
+            { x: 595, y: 260, w: 75, h: 22, type: 'normal' }
           ],
-          door: { x: 550, y: 220, w: 26, h: 40, targetX: 550, moved: false },
-          traps: []
+          // Troll 6: Harmless-looking coffee object that launches player backward
+          springObject: { x: 305, y: 236, w: 24, h: 24, label: 'FREE COFFEE ☕' },
+          // Troll 5: Fake wall that looks solid but can actually be walked through
+          fakeWall: { x: 472, y: 155, w: 22, h: 105, label: 'WALL 🧱', triggered: false },
+          // Troll 4: EXIT sign moves slightly farther away when player gets close
+          door: { x: 535, y: 220, w: 28, h: 40, targetX: 535, moved: false, isReal: true }
         };
       } else if (lvl === 2) {
-        player.x = 35; player.y = 230; player.vx = 0; player.vy = 0;
+        player.x = 30; player.y = 230; player.vx = 0; player.vy = 0;
         levelData = {
           platforms: [
-            { x: 15, y: 280, w: 80, h: 22, type: 'normal' },
-            { x: 110, y: 280, w: 100, h: 22, type: 'fake_floor', triggered: false, vy: 0 },
-            { x: 140, y: 205, w: 65, h: 18, type: 'invisible', revealed: false },
-            { x: 240, y: 210, w: 70, h: 18, type: 'normal' },
-            { x: 340, y: 150, w: 65, h: 18, type: 'normal' },
-            { x: 450, y: 120, w: 70, h: 18, type: 'normal' },
-            { x: 580, y: 140, w: 85, h: 20, type: 'normal' }
+            { x: 15, y: 270, w: 70, h: 22, type: 'normal' },
+            // Troll 1: Fake floor that collapses
+            { x: 105, y: 270, w: 80, h: 22, type: 'fake_floor', triggered: false, vy: 0 },
+            // Troll 2: Invisible platform revealed only when falling near it
+            { x: 120, y: 215, w: 65, h: 18, type: 'invisible', revealed: false },
+            { x: 200, y: 225, w: 70, h: 18, type: 'normal' },
+            // Troll 7: Platform that only moves after jumping onto it
+            { x: 295, y: 195, w: 70, h: 18, type: 'elevator', triggered: false, vx: 0, vy: 0 },
+            { x: 410, y: 135, w: 65, h: 18, type: 'normal' },
+            // Lower trap ledge for fake win
+            { x: 430, y: 245, w: 75, h: 20, type: 'normal' },
+            // Solvable genuine path to real door
+            { x: 580, y: 130, w: 85, h: 20, type: 'normal' }
           ],
-          spring: { x: 265, y: 196, w: 24, h: 14, label: 'FREE COFFEE ☕' },
-          fakeCheckpoint: { x: 360, y: 122, w: 26, h: 28, triggered: false, label: '💾 CHECKPOINT SAVED!' },
-          fakeDoor: { x: 470, y: 80, w: 26, h: 40, label: 'EXIT 🚪' },
-          realDoor: { x: 620, y: 100, w: 26, h: 40, isReal: true },
-          traps: []
+          // Troll 3: SAFE CHECKPOINT button that sends player backward
+          fakeCheckpoint: { x: 225, y: 200, w: 34, h: 24, triggered: false, label: 'SAFE CHECKPOINT 💾' },
+          // Troll 4: Fake door that teleports player backward
+          fakeDoor: { x: 480, y: 92, w: 26, h: 40, label: 'EXIT 🚪' },
+          // Troll 5: Fake finish line that says "YOU WIN! 🏆"
+          fakeWin: { x: 450, y: 215, w: 32, h: 30, label: 'YOU WIN! 🏆' },
+          // Troll 6: Moving obstacle that suddenly reverses direction
+          hazard: { x: 440, y: 105, w: 22, h: 22, vx: 1.2, minX: 375, maxX: 505, reversed: false },
+          // Troll 8: Real exit
+          realDoor: { x: 615, y: 90, w: 26, h: 40, isReal: true }
         };
       } else if (lvl === 3) {
-        player.x = 35; player.y = 230; player.vx = 0; player.vy = 0;
+        player.x = 25; player.y = 220; player.vx = 0; player.vy = 0;
         levelData = {
           platforms: [
-            { x: 15, y: 280, w: 80, h: 22, type: 'normal' },
-            { x: 130, y: 250, w: 75, h: 18, type: 'moving', vx: 1.5, minX: 120, maxX: 230 },
-            { x: 260, y: 210, w: 75, h: 18, type: 'normal' },
-            { x: 370, y: 170, w: 80, h: 18, type: 'moving', vx: -1.5, minX: 340, maxX: 470 },
-            { x: 490, y: 220, w: 90, h: 18, type: 'normal' },
-            { x: 210, y: 130, w: 70, h: 18, type: 'normal' },
-            { x: 570, y: 150, w: 90, h: 20, type: 'normal' }
+            // Starting platform
+            { x: 10, y: 260, w: 90, h: 22, type: 'normal' },
+            // Stepping platform 1
+            { x: 115, y: 240, w: 75, h: 20, type: 'normal' },
+            // Stepping platform 2
+            { x: 205, y: 215, w: 75, h: 20, type: 'normal' },
+            // Stepping platform 3
+            { x: 295, y: 190, w: 80, h: 20, type: 'normal' },
+            // Upper ledge before runway
+            { x: 390, y: 165, w: 85, h: 20, type: 'normal' },
+            // 🛋️ Office Safety Beanbag (Bouncy safety net across mid gap so falling isn't lethal!)
+            { x: 95, y: 288, w: 385, h: 20, type: 'trampoline' },
+            // Real runway platform leading to the EMPLOYEE
+            { x: 485, y: 210, w: 185, h: 22, type: 'normal' }
           ],
+          // Comic Checkpoint in Level 3 (Harmless laugh)
+          fakeCheckpoint: { x: 400, y: 142, w: 32, h: 20, triggered: false, label: 'CHECKPOINT 💾' },
+          // Comic Fake Door in Level 3 (Harmless teleport onto safe platform)
+          fakeDoor: { x: 442, y: 125, w: 26, h: 40, label: 'EXIT 🚪' },
+          // Cute slow moving office printer hazard
+          hazard: { x: 320, y: 172, w: 18, h: 18, vx: 0.6, minX: 300, maxX: 360, reversed: false },
+          // Final Target: The runaway employee (Tuned to be easily caught)
           target: {
-            x: 520, y: 190, w: 24, h: 24, vx: 0,
+            x: 565, y: 180, w: 24, h: 26, vx: 0,
             speech: 'Catch me for appraisal! 📈',
-            timer: 0
+            timer: 0,
+            stamina: 100
           }
         };
+      }
+
+      gameRunning = true;
+      if (!gameAnimId) {
+        gameAnimId = requestAnimationFrame(gameLoop);
       }
     }
 
@@ -2013,7 +2475,7 @@ function setupOfficeRoastMission() {
     }
 
     function spawnDeathParticles(x, y) {
-      for (let i = 0; i < 16; i++) {
+      for (let i = 0; i < 18; i++) {
         const angle = Math.random() * Math.PI * 2;
         const spd = 2 + Math.random() * 4;
         particles.push({
@@ -2026,38 +2488,62 @@ function setupOfficeRoastMission() {
       }
     }
 
-    function killPlayer(reason = 'Skill issue.') {
-      if (player.isDying) return;
+    function killPlayer(customReason = null) {
+      if (player.isDying || isLevelTransitioning) return;
       player.isDying = true;
+      player.vx = 0;
+      player.vy = 0;
       deathsCount++;
       if (deathsEl) deathsEl.innerText = `💀 Fails: ${deathsCount}`;
+
+      const reason = customReason || TROLL_DEATH_MESSAGES[Math.floor(Math.random() * TROLL_DEATH_MESSAGES.length)];
       playSound('die');
+      triggerScreenShake();
       triggerHaptic([80, 50, 100]);
       spawnDeathParticles(player.x + player.w / 2, player.y + player.h / 2);
-      addFloatingText(reason, player.x, Math.max(30, player.y - 10), '#ff3366');
+      addFloatingText(reason, Math.max(20, player.x - 30), Math.max(30, player.y - 15), '#ff3366');
 
-      // Instant quick respawn
+      // Quick snappy respawn
       setTimeout(() => {
         loadLevel(currentLevel);
-      }, 200);
+      }, 260);
     }
 
     function completeLevel(lvl) {
+      if (isLevelTransitioning) return;
+      isLevelTransitioning = true;
+      player.vx = 0;
+      player.vy = 0;
+
       playSound('win');
       triggerHaptic([60, 40, 120]);
 
       if (lvl === 1) {
         bannerSlot.innerHTML = `
           <div class="troll-banner-modal">
-            <div class="troll-banner-title">LEVEL 1 PASSED 🎉</div>
-            <div class="troll-banner-sub">“That was the easy level. 😂”</div>
-            <button class="troll-banner-btn" id="next-lvl-btn">Level 2: Trust Nothing →</button>
+            <div class="troll-banner-title">LEVEL 1 COMPLETE 🎉</div>
+            <div class="troll-banner-sub">“That was the easy one. Don't celebrate yet.”</div>
+            <button class="troll-banner-btn" id="next-lvl-btn">Level 2: Trust Nothing 💀 →</button>
           </div>
         `;
-        document.getElementById('next-lvl-btn').addEventListener('click', () => {
-          bannerSlot.innerHTML = '';
-          loadLevel(2);
-        });
+        const nxt = document.getElementById('next-lvl-btn');
+        if (nxt) {
+          nxt.addEventListener('click', () => {
+            if (levelTransitionTimer) {
+              clearTimeout(levelTransitionTimer);
+              levelTransitionTimer = null;
+            }
+            bannerSlot.innerHTML = '';
+            loadLevel(2);
+          });
+        }
+        // Auto-proceed after brief pause
+        levelTransitionTimer = setTimeout(() => {
+          if (currentLevel === 1) {
+            bannerSlot.innerHTML = '';
+            loadLevel(2);
+          }
+        }, 1800);
       } else if (lvl === 2) {
         bannerSlot.innerHTML = `
           <div class="troll-banner-modal">
@@ -2066,104 +2552,181 @@ function setupOfficeRoastMission() {
             <button class="troll-banner-btn" id="next-lvl-btn">Level 3: The Employee Test 💀 →</button>
           </div>
         `;
-        document.getElementById('next-lvl-btn').addEventListener('click', () => {
-          bannerSlot.innerHTML = '';
-          loadLevel(3);
-        });
+        const nxt = document.getElementById('next-lvl-btn');
+        if (nxt) {
+          nxt.addEventListener('click', () => {
+            if (levelTransitionTimer) {
+              clearTimeout(levelTransitionTimer);
+              levelTransitionTimer = null;
+            }
+            bannerSlot.innerHTML = '';
+            loadLevel(3);
+          });
+        }
+        levelTransitionTimer = setTimeout(() => {
+          if (currentLevel === 2) {
+            bannerSlot.innerHTML = '';
+            loadLevel(3);
+          }
+        }, 1800);
       } else if (lvl === 3) {
-        // Grand Finale Climax!
+        // Dramatic Final Analysis Climax
         triggerClimaxRoastSequence();
       }
     }
 
+    // ========================================================
+    // 🔥 OFFICE ROAST MODE ACTIVATION SEQUENCE
+    // ========================================================
     function triggerClimaxRoastSequence() {
       gameRunning = false;
+      overlay.classList.add('screen-darken');
       playSound('alarm');
+      triggerScreenShake();
       triggerHaptic([100, 50, 100, 50, 200]);
 
       stageBox.innerHTML = `
         <div class="hacker-terminal" style="max-width: 520px; width: 100%; margin: 1rem 0;">
-          <div style="color: #ff3366; font-weight: bold; margin-bottom: 0.6rem; font-size: 1rem;">
+          <div style="color: #ff3366; font-weight: bold; margin-bottom: 0.6rem; font-size: 1rem; letter-spacing: 1px;">
             🚨 SYSTEM OVERRIDE: THE EMPLOYEE TEST PASSED!
           </div>
-          <div id="climax-logs" class="terminal-logs" style="min-height: 140px;"></div>
+          <div id="climax-logs" class="terminal-logs" style="min-height: 165px;"></div>
+          <div id="climax-progress-wrap" class="roast-progress-bar-wrap" style="display: none; margin-top: 0.8rem;">
+            <div id="climax-progress-bar" class="roast-progress-bar"></div>
+          </div>
         </div>
       `;
 
       const logsEl = document.getElementById('climax-logs');
-      const climaxSteps = [
-        { text: '> 🚨 EMPLOYEE IDENTIFIED.', delay: 400 },
-        { text: '> 🔍 RUNNING BACKGROUND CHECK…', delay: 1000 },
-        { text: '> 📉 CHECKING PRODUCTIVITY… (0.0001%)', delay: 1600 },
-        { text: '> 📁 CHECKING WORK HISTORY…', delay: 2200 },
-        { text: '> 🔥 ROAST DATABASE UNLOCKED.', delay: 2800 },
-        { text: '> 🔓 OFFICE ROAST MODE ACTIVATED! 😂', delay: 3400, isFinal: true }
+      const progressWrap = document.getElementById('climax-progress-wrap');
+      const progressBar = document.getElementById('climax-progress-bar');
+
+      const climaxMessages = [
+        "EMPLOYEE IDENTIFIED...",
+        "RUNNING BACKGROUND CHECK...",
+        "CHECKING PRODUCTIVITY...",
+        "CHECKING ATTENDANCE...",
+        "CHECKING WORK HISTORY...",
+        "CHECKING OFFICE BEHAVIOUR...",
+        "CALCULATING ROAST POTENTIAL..."
       ];
 
-      climaxSteps.forEach((step) => {
+      climaxMessages.forEach((msg, idx) => {
         setTimeout(() => {
           if (!logsEl) return;
-          playSound('jump');
+          playSound('blip');
           const row = document.createElement('div');
-          row.className = `terminal-log-item ${step.isFinal ? 'terminal-log-error' : ''}`;
-          row.innerText = step.text;
+          row.className = 'terminal-log-item';
+          row.innerText = `> ${msg}`;
           logsEl.appendChild(row);
-
-          if (step.isFinal) {
-            triggerHaptic([100, 100, 250]);
-            setTimeout(renderFinalSarcasticShowcase, 1600);
-          }
-        }, step.delay);
+        }, idx * 450);
       });
+
+      // Progress bar & Database Found step
+      setTimeout(() => {
+        if (!logsEl || !progressWrap || !progressBar) return;
+        playSound('alarm');
+        const dbRow = document.createElement('div');
+        dbRow.className = 'terminal-log-item terminal-log-error';
+        dbRow.style.fontSize = '1.05rem';
+        dbRow.style.marginTop = '0.5rem';
+        dbRow.innerText = '⚠️ ROAST DATABASE FOUND';
+        logsEl.appendChild(dbRow);
+
+        const progressLabel = document.createElement('div');
+        progressLabel.className = 'terminal-log-item';
+        progressLabel.style.color = '#00e676';
+        progressLabel.style.fontWeight = 'bold';
+        progressLabel.style.marginTop = '0.4rem';
+        progressLabel.innerText = 'Progress bar:';
+        logsEl.appendChild(progressLabel);
+
+        const progressAscii = document.createElement('div');
+        progressAscii.className = 'terminal-log-item';
+        progressAscii.style.color = '#00e676';
+        progressAscii.style.fontWeight = 'bold';
+        progressAscii.style.letterSpacing = '1px';
+        progressAscii.innerText = '████████████████████ 100%';
+        logsEl.appendChild(progressAscii);
+
+        progressWrap.style.display = 'block';
+        setTimeout(() => {
+          progressBar.style.width = '100%';
+        }, 80);
+      }, climaxMessages.length * 450 + 200);
+
+      // Final Mode Activation announcement
+      setTimeout(() => {
+        if (!logsEl) return;
+        playSound('win');
+        triggerHaptic([100, 100, 250]);
+
+        const finalRow = document.createElement('div');
+        finalRow.className = 'terminal-log-item terminal-log-error';
+        finalRow.style.fontSize = '1.2rem';
+        finalRow.style.marginTop = '0.7rem';
+        finalRow.innerHTML = '🔓 <b>OFFICE ROAST MODE ACTIVATED</b><br><span style="color: #fff; font-size: 0.92rem; font-weight: 600;">“You survived 3 levels just to unlock this.”</span>';
+        logsEl.appendChild(finalRow);
+
+        setTimeout(renderFinalSarcasticShowcase, 2000);
+      }, climaxMessages.length * 450 + 1700);
     }
 
+    // ========================================================
+    // 📸 REVEAL SARCASTIC PHOTO SHOWCASE
+    // ========================================================
     function renderFinalSarcasticShowcase() {
-      toggleMemeMode(true); // Unlock meme mode globally!
+      // Officially unlock roast mode for the session!
+      isRoastModeUnlocked = true;
+      toggleMemeMode(true);
       playSound('win');
 
       function updateShowcaseCard() {
-        const key = memberKeys[currentShowcaseMemberIndex];
-        const member = TEAM_MEMBERS[key];
+        const emp = employees[currentShowcaseIndex];
         const imgEl = document.getElementById('showcase-img');
         const nameEl = document.getElementById('showcase-name');
         const roleEl = document.getElementById('showcase-role');
         const roastEl = document.getElementById('showcase-roast');
         const pillEl = document.getElementById('showcase-index');
 
-        if (imgEl && member) {
-          imgEl.src = member.sarcasticPhoto;
-          imgEl.onerror = () => { imgEl.src = member.realPhoto; };
+        if (imgEl && emp) {
+          // Display the sarcastic photo as required!
+          imgEl.src = emp.roastPhoto;
+          imgEl.onerror = function() {
+            // Graceful fallback to existing assets if user hasn't copied custom photos yet
+            this.src = emp.fallbackRoast || emp.fallbackNormal;
+          };
         }
-        if (nameEl && member) nameEl.innerText = member.name;
-        if (roleEl && member) roleEl.innerText = member.role;
-        if (roastEl && member) roastEl.innerText = `“${member.roast}”`;
-        if (pillEl) pillEl.innerText = `${currentShowcaseMemberIndex + 1} / ${memberKeys.length}`;
+        if (nameEl && emp) nameEl.innerText = emp.name;
+        if (roleEl && emp) roleEl.innerText = emp.role;
+        if (roastEl && emp) roastEl.innerText = `“${emp.roast}”`;
+        if (pillEl) pillEl.innerText = `${currentShowcaseIndex + 1} / ${employees.length}`;
 
-        if (member && member.sound) {
-          playAnimalSound(member.sound);
+        if (emp && emp.sound) {
+          playAnimalSound(emp.sound);
         }
       }
 
       stageBox.innerHTML = `
         <div class="secret-unlocked-card">
           <div class="unlocked-trophy">📸 🏆</div>
-          <div class="mission-title" style="color: #ff3366;">OFFICE ROAST MODE ACTIVATED</div>
-          <div class="mission-desc" style="color: #fff; font-size: 0.95rem; margin-bottom: 0.6rem;">
-            “Congratulations. You wasted company time and unlocked everyone's roast.”
+          <div class="mission-title" style="color: #ff3366; font-size: 1.35rem; font-weight: 800;">OFFICE ROAST MODE ACTIVATED</div>
+          <div class="mission-desc" style="color: #ffffffe6; font-size: 0.95rem; margin-bottom: 0.6rem; font-style: italic;">
+            “You survived 3 levels just to unlock this.”
           </div>
 
           <div class="sarcastic-showcase-box">
             <div class="showcase-avatar-frame">
               <img id="showcase-img" class="showcase-avatar-img" src="" alt="Sarcastic Roast" />
             </div>
-            <div class="showcase-member-name" id="showcase-name">Sathwik</div>
-            <div class="showcase-member-role" id="showcase-role">Head of Drama</div>
-            <div class="showcase-member-roast" id="showcase-roast">“Roast content”</div>
+            <div class="showcase-member-name" id="showcase-name">Employee Name</div>
+            <div class="showcase-member-role" id="showcase-role">Employee Role</div>
+            <div class="showcase-member-roast" id="showcase-roast">“Roast quote goes here”</div>
 
             <div class="showcase-nav-row">
-              <button id="showcase-prev-btn" class="showcase-nav-btn" title="Previous Victim">←</button>
-              <span id="showcase-index" class="showcase-index-pill">1 / 11</span>
-              <button id="showcase-next-btn" class="showcase-nav-btn" title="Next Victim">→</button>
+              <button id="showcase-prev-btn" class="showcase-nav-btn" title="Previous Employee">←</button>
+              <span id="showcase-index" class="showcase-index-pill">1 / ${employees.length}</span>
+              <button id="showcase-next-btn" class="showcase-nav-btn" title="Next Employee">→</button>
             </div>
           </div>
 
@@ -2183,7 +2746,7 @@ function setupOfficeRoastMission() {
         prevBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           recordUserActivity();
-          currentShowcaseMemberIndex = (currentShowcaseMemberIndex - 1 + memberKeys.length) % memberKeys.length;
+          currentShowcaseIndex = (currentShowcaseIndex - 1 + employees.length) % employees.length;
           updateShowcaseCard();
         });
       }
@@ -2192,7 +2755,7 @@ function setupOfficeRoastMission() {
         nextBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           recordUserActivity();
-          currentShowcaseMemberIndex = (currentShowcaseMemberIndex + 1) % memberKeys.length;
+          currentShowcaseIndex = (currentShowcaseIndex + 1) % employees.length;
           updateShowcaseCard();
         });
       }
@@ -2203,9 +2766,34 @@ function setupOfficeRoastMission() {
           recordUserActivity();
           toggleMemeMode(false);
           closeMission();
-          showSassyToast('😇 Normal Real Photos Restored.', 3000);
+          const restoreQuips = [
+            '😇 Normal Photos Restored. Cowardly retreat back to corporate safety.',
+            '😇 Back to reality. Let’s pretend you never saw those roasts.',
+            '😇 Professionalism restored before HR investigates.'
+          ];
+          showSassyToast(restoreQuips[Math.floor(Math.random() * restoreQuips.length)], 3000);
         });
       }
+    }
+
+    function retryGame() {
+      if (levelTransitionTimer) {
+        clearTimeout(levelTransitionTimer);
+        levelTransitionTimer = null;
+      }
+      isLevelTransitioning = false;
+      currentLevel = 1;
+      deathsCount = 0;
+      if (deathsEl) deathsEl.innerText = '💀 Fails: 0';
+      if (bannerSlot) bannerSlot.innerHTML = '';
+      playSound('jump');
+      const retryQuips = [
+        '🔄 Restarting from Level 1? Embarrassing, but we respect the sheer delusion.',
+        '🔄 Back to square one. Maybe try keeping your eyes open this time?',
+        '🔄 Resetting! Hope you brought some extra dignity.'
+      ];
+      showSassyToast(retryQuips[Math.floor(Math.random() * retryQuips.length)], 2500);
+      loadLevel(1);
     }
 
     // Input Handlers
@@ -2217,7 +2805,7 @@ function setupOfficeRoastMission() {
         e.preventDefault();
         keys.jump = true;
       }
-      if (e.key === 'r' || e.key === 'R') loadLevel(currentLevel);
+      if (e.key === 'r' || e.key === 'R') retryGame();
     }
 
     function handleKeyUp(e) {
@@ -2226,8 +2814,13 @@ function setupOfficeRoastMission() {
       if (['ArrowUp', 'w', 'W', ' ', 'Spacebar'].includes(e.key)) keys.jump = false;
     }
 
+    if (activeCleanupKeyListeners) activeCleanupKeyListeners();
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    activeCleanupKeyListeners = () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
 
     // On-screen touch buttons
     const btnLeft = document.getElementById('btn-left');
@@ -2250,7 +2843,10 @@ function setupOfficeRoastMission() {
       btnJump.addEventListener('pointerleave', () => keys.jump = false);
     }
     if (retryBtn) {
-      retryBtn.addEventListener('click', () => loadLevel(currentLevel));
+      retryBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        retryGame();
+      });
     }
     if (canvas) {
       canvas.addEventListener('click', () => {
@@ -2266,11 +2862,13 @@ function setupOfficeRoastMission() {
 
     function gameLoop() {
       if (!gameRunning) return;
+      gameAnimId = requestAnimationFrame(gameLoop);
 
-      if (!player.isDying) {
+      try {
+        if (!player.isDying && !isLevelTransitioning) {
         // 1. Horizontal Movement
         const targetVx = (keys.right ? 3.6 : 0) - (keys.left ? 3.6 : 0);
-        player.vx = player.vx * 0.7 + targetVx * 0.3;
+        player.vx = player.vx * 0.72 + targetVx * 0.28;
         if (Math.abs(targetVx) > 0.1) {
           player.facing = targetVx > 0 ? 1 : -1;
           player.anim += 0.25;
@@ -2283,19 +2881,19 @@ function setupOfficeRoastMission() {
         if (player.vy > 9.5) player.vy = 9.5;
 
         if (player.isGrounded) {
-          player.coyote = 5;
+          player.coyote = 6;
         } else if (player.coyote > 0) {
           player.coyote--;
         }
 
         if (keys.jump && player.coyote > 0) {
-          player.vy = -8.8;
+          player.vy = -9.1;
           player.coyote = 0;
           player.isGrounded = false;
           playSound('jump');
         }
 
-        // Apply Movement & Collision
+        // Apply Movement
         player.x += player.vx;
         player.y += player.vy;
         player.isGrounded = false;
@@ -2308,8 +2906,43 @@ function setupOfficeRoastMission() {
               if (p.x <= p.minX || p.x >= p.maxX) p.vx *= -1;
             }
 
-            if (p.type === 'falling' && p.triggered) {
-              p.vy += 0.45;
+            if (p.type === 'elevator' && p.triggered) {
+              p.x += p.vx;
+              p.y += p.vy;
+            }
+
+            if (p.type === 'dodge') {
+              // Troll 2: Platform slides sideways away as player approaches!
+              if (player.x > 150 && player.x < 250 && !p.dodged) {
+                p.dodged = true;
+                p.targetX = 285;
+                addFloatingText('BYE! ➡️', p.x, p.y - 12);
+              }
+              p.x += (p.targetX - p.x) * 0.12;
+            }
+
+            if (p.type === 'surprise') {
+              // Troll 3: Invisible platform reveals when jumping into the impossible gap
+              if (!p.revealed && player.x > 345 && player.x < 465 && player.y > 170) {
+                p.revealed = true;
+                playSound('win');
+                addFloatingText('SURPRISE! ✨', p.x + 10, p.y - 12);
+              }
+              if (!p.revealed) return;
+            }
+
+            if (p.type === 'invisible') {
+              // Level 2 Troll 2: Invisible safety platform revealed when falling near it
+              if (!p.revealed && player.y > 165 && player.x > 95 && player.x < 195) {
+                p.revealed = true;
+                playSound('win');
+                addFloatingText('SAVED! ✨', p.x + 10, p.y - 12);
+              }
+              if (!p.revealed) return;
+            }
+
+            if (p.type === 'fake_floor' && p.triggered) {
+              p.vy += 0.55;
               p.y += p.vy;
             }
 
@@ -2325,118 +2958,229 @@ function setupOfficeRoastMission() {
               player.vy = 0;
               player.isGrounded = true;
 
-              // Trigger Level 1 Traps
+              // Trigger Disappearing Platform
               if (p.type === 'disappear' && !p.vanished) {
-                p.flash++;
-                if (p.flash > 4) {
-                  p.vanished = true;
-                  playSound('die');
-                  addFloatingText('NOPE! 💨', p.x + 20, p.y - 10);
-                }
-              } else if (p.type === 'falling' && !p.triggered) {
-                p.triggered = true;
-                p.vy = 2;
-                addFloatingText('BYE! ⬇️', p.x + 20, p.y - 10);
+                p.vanished = true;
+                playSound('die');
+                triggerScreenShake();
+                addFloatingText('NOPE! 💨', p.x + 20, p.y - 10);
               } else if (p.type === 'fake_floor' && !p.triggered) {
                 p.triggered = true;
                 p.vy = 4;
                 playSound('troll');
+                triggerScreenShake();
                 addFloatingText('TRICKED! 🤡', p.x + 20, p.y - 10);
-              } else if (p.type === 'invisible') {
-                p.revealed = true;
+              } else if (p.type === 'elevator' && !p.triggered) {
+                p.triggered = true;
+                p.vx = 2.4;
+                p.vy = -1.0;
+                playSound('spring');
+                addFloatingText('HOLD ON! 🚀', p.x + 10, p.y - 12);
+              } else if (p.type === 'trampoline') {
+                player.vy = -9.6;
+                playSound('spring');
+                triggerScreenShake();
+                triggerHaptic(50);
+                addFloatingText('BOING! 🛋️', p.x + p.w / 2 - 25, p.y - 14, '#00e676');
               }
             }
           });
         }
 
-        // Level 1: Fleeing Finish Door
-        if (currentLevel === 1 && levelData.door) {
-          const d = levelData.door;
-          const dist = Math.hypot((player.x + player.w / 2) - (d.x + d.w / 2), (player.y + player.h / 2) - (d.y + d.h / 2));
-
-          if (dist < 75 && !d.moved) {
-            d.moved = true;
-            d.targetX = 630;
-            playSound('troll');
-            addFloatingText('NOPE! 🏃', d.x, d.y - 15);
-          }
-
-          d.x += (d.targetX - d.x) * 0.15;
-
-          // Reach exit
-          if (Math.abs(player.x - d.x) < 22 && Math.abs(player.y - d.y) < 32) {
-            completeLevel(1);
-            return;
-          }
-        }
-
-        // Level 2: Spring Pad, Fake Door, Fake Checkpoint, Real Door
-        if (currentLevel === 2) {
-          const s = levelData.spring;
-          if (s && player.x + player.w > s.x && player.x < s.x + s.w && player.y + player.h >= s.y && player.y + player.h <= s.y + s.h + 6) {
+        // Level 1 Traps
+        if (currentLevel === 1) {
+          // Spring Object (FREE COFFEE ☕ catapults player backward)
+          const so = levelData.springObject;
+          if (so && Math.hypot((player.x + player.w / 2) - (so.x + so.w / 2), (player.y + player.h / 2) - (so.y + so.h / 2)) < 24) {
             playSound('spring');
+            triggerScreenShake();
             triggerHaptic(60);
-            player.vx = -16;
+            player.vx = -15;
             player.vy = -6;
-            addFloatingText('BOING! 🚀', s.x - 10, s.y - 20);
+            addFloatingText('SPRING TRAP! 💥', so.x - 15, so.y - 20);
           }
 
-          const fc = levelData.fakeCheckpoint;
-          if (fc && !fc.triggered && Math.hypot(player.x - fc.x, player.y - fc.y) < 24) {
-            fc.triggered = true;
-            playSound('troll');
-            killPlayer('Saved to Trash! 🗑️');
-            return;
+          // Fake Wall (can be walked through)
+          const fw = levelData.fakeWall;
+          if (fw && !fw.triggered && player.x + player.w > fw.x && player.x < fw.x + fw.w && player.y + player.h > fw.y) {
+            fw.triggered = true;
+            addFloatingText('GHOST WALL 👻', fw.x - 10, fw.y - 10);
           }
 
-          const fd = levelData.fakeDoor;
-          if (fd && Math.hypot(player.x - fd.x, player.y - fd.y) < 26) {
-            playSound('troll');
-            killPlayer('Door was a lie. 🤡');
-            return;
-          }
+          // Moving EXIT door
+          if (levelData.door) {
+            const d = levelData.door;
+            const dist = Math.hypot((player.x + player.w / 2) - (d.x + d.w / 2), (player.y + player.h / 2) - (d.y + d.h / 2));
 
-          const rd = levelData.realDoor;
-          if (rd && Math.hypot(player.x - rd.x, player.y - rd.y) < 28) {
-            completeLevel(2);
-            return;
-          }
-        }
-
-        // Level 3: Tiny Running Target
-        if (currentLevel === 3 && levelData.target) {
-          const tgt = levelData.target;
-          const dx = (player.x + player.w / 2) - (tgt.x + tgt.w / 2);
-          const dy = (player.y + player.h / 2) - (tgt.y + tgt.h / 2);
-          const dist = Math.hypot(dx, dy);
-
-          tgt.timer += 0.02;
-
-          // Target runs away when player approaches!
-          if (dist < 110) {
-            tgt.vx = (dx > 0 ? -3.4 : 3.4);
-            if (Math.random() < 0.05) {
-              const quips = ['Catch me for appraisal! 📈', '404: Promotion not found!', 'Talk to HR! 📝', 'Overtime required! 💀'];
-              tgt.speech = quips[Math.floor(Math.random() * quips.length)];
+            if (dist < 85 && !d.moved) {
+              d.moved = true;
+              d.targetX = 625;
+              playSound('troll');
+              addFloatingText('NOPE! 🏃‍♂️', d.x, d.y - 15);
             }
-          } else {
-            tgt.vx *= 0.9;
-          }
 
-          tgt.x += tgt.vx;
-          tgt.x = Math.max(30, Math.min(630, tgt.x));
+            d.x += (d.targetX - d.x) * 0.14;
 
-          // When caught!
-          if (dist < 26) {
-            completeLevel(3);
-            return;
+            // Reached real exit
+            if (!isLevelTransitioning && Math.abs(player.x - d.x) < 26 && Math.abs(player.y - d.y) < 32) {
+              completeLevel(1);
+            }
           }
         }
 
-        // Void death check (Immediate trigger when falling below platforms)
-        if (player.y > 292) {
-          killPlayer('Fell into the abyss.');
-          return;
+        // Level 2 Traps
+        if (currentLevel === 2) {
+          // SAFE CHECKPOINT button betrayal
+          const fc = levelData.fakeCheckpoint;
+          if (fc && !fc.triggered && Math.hypot((player.x + player.w / 2) - (fc.x + fc.w / 2), (player.y + player.h / 2) - (fc.y + fc.h / 2)) < 24) {
+            fc.triggered = true;
+            addFloatingText('Checkpoint saved! ✅', fc.x, fc.y - 14, '#00e676');
+            setTimeout(() => {
+              playSound('troll');
+              triggerScreenShake();
+              addFloatingText('Saved? Absolutely not. 😂', player.x, player.y - 18, '#ff3366');
+              player.vx = -16;
+              player.vy = -6;
+            }, 240);
+          }
+
+          // Moving hazard reversing direction
+          const hz = levelData.hazard;
+          if (hz) {
+            hz.x += hz.vx;
+            if (hz.x <= hz.minX || hz.x >= hz.maxX) hz.vx *= -1;
+
+            const distHz = Math.hypot((player.x + player.w / 2) - (hz.x + hz.w / 2), (player.y + player.h / 2) - (hz.y + hz.h / 2));
+            if (distHz < 70 && !hz.reversed && !player.isGrounded) {
+              hz.reversed = true;
+              hz.vx = (player.x > hz.x ? 3.8 : -3.8);
+              playSound('alarm');
+              addFloatingText('SURPRISE REVERSE! 🔄', hz.x, hz.y - 12);
+            }
+
+            if (distHz < 20) {
+              killPlayer('Hit by rogue office machinery.');
+            }
+          }
+
+          // Fake Door (Teleport trap)
+          const fd = levelData.fakeDoor;
+          if (fd && Math.hypot((player.x + player.w / 2) - (fd.x + fd.w / 2), (player.y + player.h / 2) - (fd.y + fd.h / 2)) < 26) {
+            playSound('troll');
+            triggerScreenShake();
+            addFloatingText('Door was a lie. 🌀 TELEPORTED!', player.x - 20, player.y - 16);
+            player.x = 215;
+            player.y = 195;
+            player.vx = -4;
+          }
+
+          // Fake Win Trophy (resets player slightly backward as requested)
+          const fw = levelData.fakeWin;
+          if (fw && Math.hypot((player.x + player.w / 2) - (fw.x + fw.w / 2), (player.y + player.h / 2) - (fw.y + fw.h / 2)) < 28) {
+            playSound('troll');
+            triggerScreenShake();
+            addFloatingText('“HAHA. You actually believed that?”', fw.x - 30, fw.y - 18, '#ff3366');
+            player.x = 220;
+            player.y = 195;
+            player.vx = -7;
+            player.vy = -3;
+          }
+
+          // Real Door
+          const rd = levelData.realDoor;
+          if (rd && !isLevelTransitioning && Math.hypot((player.x + player.w / 2) - (rd.x + rd.w / 2), (player.y + player.h / 2) - (rd.y + rd.h / 2)) < 28) {
+            completeLevel(2);
+          }
+        }
+
+        // Level 3 Traps & Target (Tuned to be fair, hilarious, and fun to beat)
+        if (currentLevel === 3) {
+          // Fake Checkpoint in Level 3 (Comic roast, safe bounce)
+          const fc3 = levelData.fakeCheckpoint;
+          if (fc3 && !fc3.triggered && Math.hypot((player.x + player.w / 2) - (fc3.x + fc3.w / 2), (player.y + player.h / 2) - (fc3.y + fc3.h / 2)) < 24) {
+            fc3.triggered = true;
+            playSound('troll');
+            addFloatingText('“HR rejected this checkpoint! 😂”', fc3.x - 20, fc3.y - 14, '#ff3366');
+            player.vx = -3;
+            player.vy = -2;
+          }
+
+          // Fake Door in Level 3 (Harmless teleport onto safe upper platform)
+          const fd3 = levelData.fakeDoor;
+          if (fd3 && Math.hypot((player.x + player.w / 2) - (fd3.x + fd3.w / 2), (player.y + player.h / 2) - (fd3.y + fd3.h / 2)) < 26) {
+            playSound('troll');
+            triggerScreenShake();
+            addFloatingText('Shortcut denied by Management! 🌀', player.x - 30, player.y - 16);
+            player.x = 395;
+            player.y = 135;
+            player.vx = 0;
+            player.vy = 0;
+          }
+
+          // Moving Hazard in Level 3 (Office printer jam bump, non-lethal!)
+          const hz3 = levelData.hazard;
+          if (hz3) {
+            hz3.x += hz3.vx;
+            if (hz3.x <= hz3.minX || hz3.x >= hz3.maxX) hz3.vx *= -1;
+            const distHz = Math.hypot((player.x + player.w / 2) - (hz3.x + hz3.w / 2), (player.y + player.h / 2) - (hz3.y + hz3.h / 2));
+            if (distHz < 18) {
+              playSound('spring');
+              addFloatingText('Printer Jam! 🖨️', hz3.x - 10, hz3.y - 12);
+              player.vx = player.x > hz3.x ? 3.5 : -3.5;
+              player.vy = -2;
+            }
+          }
+
+          // Final Target: The Employee (Fun, fair, and easy to catch)
+          if (levelData.target) {
+            const tgt = levelData.target;
+            const dx = (player.x + player.w / 2) - (tgt.x + tgt.w / 2);
+            const dy = (player.y + player.h / 2) - (tgt.y + tgt.h / 2);
+            const dist = Math.hypot(dx, dy);
+
+            tgt.timer += 0.02;
+
+            // Target runs away when player approaches at a gentle, catchable speed
+            if (dist < 140) {
+              tgt.vx = (dx > 0 ? -1.8 : 1.8);
+              tgt.stamina = (tgt.stamina !== undefined ? tgt.stamina : 100) - 1;
+
+              if (tgt.stamina <= 0) {
+                // Employee exhausts after a brief chase!
+                tgt.vx *= 0.2;
+                tgt.speech = 'I surrender! Take my appraisal! 🥵📈';
+              } else if (Math.random() < 0.04) {
+                const quips = [
+                  'Catch me for appraisal! 📈',
+                  'I was on mute! 🎙️',
+                  'Wait, don\'t ping me on Slack! 🏃‍♂️',
+                  'Friday 5 PM speed! 💨',
+                  'Take my leaves, not my soul! 😭'
+                ];
+                tgt.speech = quips[Math.floor(Math.random() * quips.length)];
+              }
+            } else {
+              tgt.vx *= 0.85;
+            }
+
+            tgt.x += tgt.vx;
+            // Kept safely on the runway
+            tgt.x = Math.max(490, Math.min(640, tgt.x));
+
+            // Wide generous catch radius (dist < 48 instead of 28)
+            if (!isLevelTransitioning && dist < 48) {
+              completeLevel(3);
+            }
+          }
+        }
+
+        // Void death check
+        if (!player.isDying && !isLevelTransitioning && player.y > (currentLevel === 3 ? 318 : 295)) {
+          if (currentLevel === 3) {
+            killPlayer('Bro escaped from work faster than from responsibility.');
+          } else {
+            killPlayer();
+          }
         }
       }
 
@@ -2445,7 +3189,7 @@ function setupOfficeRoastMission() {
       // ========================================================
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Cyber Grid Background
+      // Office Cyber Grid Background
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1;
       for (let x = 0; x < canvas.width; x += 34) {
@@ -2459,21 +3203,43 @@ function setupOfficeRoastMission() {
       if (levelData.platforms) {
         levelData.platforms.forEach((p) => {
           if (p.type === 'disappear' && p.vanished) return;
-          if (p.type === 'invisible' && !p.revealed) {
-            // Subtle shimmer
-            ctx.fillStyle = 'rgba(255, 51, 102, 0.06)';
+          if ((p.type === 'surprise' || p.type === 'invisible') && !p.revealed) {
+            // Subtle shimmering hint
+            ctx.fillStyle = 'rgba(255, 51, 102, 0.05)';
             ctx.fillRect(p.x, p.y, p.w, p.h);
             return;
           }
 
+          // Trampoline Bouncy Platform (Level 3 Safety Net)
+          if (p.type === 'trampoline') {
+            ctx.fillStyle = 'rgba(16, 32, 48, 0.95)';
+            ctx.beginPath();
+            drawRoundRect(p.x, p.y, p.w, p.h, 8);
+            ctx.fill();
+
+            // Neon cyan bouncy rim
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(p.x + 4, p.y + 1);
+            ctx.lineTo(p.x + p.w - 4, p.y + 1);
+            ctx.stroke();
+
+            // Centered beanbag label
+            ctx.fillStyle = '#00f0ff';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillText('🛋️ OFFICE SAFETY BEANBAG (BOUNCE TO RECOVER)', p.x + p.w / 2 - 110, p.y + 13);
+            return;
+          }
+
           // Platform Body
-          ctx.fillStyle = p.flash > 0 ? '#ff3366' : 'rgba(30, 30, 42, 0.92)';
+          ctx.fillStyle = p.flash > 0 ? '#ff3366' : 'rgba(30, 30, 44, 0.94)';
           ctx.beginPath();
-          ctx.roundRect(p.x, p.y, p.w, p.h, 6);
+          drawRoundRect(p.x, p.y, p.w, p.h, 6);
           ctx.fill();
 
-          // Top Neon Highlight
-          ctx.strokeStyle = p.flash > 0 ? '#ffffff' : (p.type === 'moving' ? '#bd00ff' : '#00e676');
+          // Top Neon Border
+          ctx.strokeStyle = (p.type === 'elevator' || p.type === 'surprise') ? '#bd00ff' : '#00e676';
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(p.x + 4, p.y + 1);
@@ -2482,24 +3248,66 @@ function setupOfficeRoastMission() {
         });
       }
 
-      // Render Spring Pad (Level 2)
-      if (levelData.spring) {
-        const s = levelData.spring;
+      // Render Spring Object (Level 1)
+      if (levelData.springObject) {
+        const so = levelData.springObject;
+        ctx.font = '20px sans-serif';
+        ctx.fillText('☕', so.x, so.y + 18);
         ctx.fillStyle = '#ffe082';
-        ctx.fillRect(s.x, s.y, s.w, s.h);
-        ctx.fillStyle = '#000';
         ctx.font = 'bold 8px sans-serif';
-        ctx.fillText('☕', s.x + 7, s.y + 10);
+        ctx.fillText('FREE COFFEE', so.x - 12, so.y + 28);
       }
 
-      // Render Doors & Checkpoints
+      // Render Fake Wall (Level 1)
+      if (levelData.fakeWall) {
+        const fw = levelData.fakeWall;
+        ctx.fillStyle = 'rgba(60, 60, 80, 0.85)';
+        ctx.fillRect(fw.x, fw.y, fw.w, fw.h);
+        ctx.strokeStyle = '#ff3366';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(fw.x, fw.y, fw.w, fw.h);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 9px monospace';
+        ctx.fillText('WALL', fw.x - 1, fw.y + 50);
+      }
+
+      // Render Checkpoint Button (Level 2)
+      if (levelData.fakeCheckpoint) {
+        const fc = levelData.fakeCheckpoint;
+        ctx.fillStyle = '#00e676';
+        ctx.beginPath();
+        drawRoundRect(fc.x, fc.y, fc.w, fc.h, 6);
+        ctx.fill();
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillText('CHECKPOINT', fc.x + 2, fc.y + 14);
+      }
+
+      // Render Moving Hazard (Level 2)
+      if (levelData.hazard) {
+        const hz = levelData.hazard;
+        ctx.font = '22px sans-serif';
+        ctx.fillText('🖨️', hz.x, hz.y + 18);
+      }
+
+      // Render Fake Win Trophy (Level 2)
+      if (levelData.fakeWin) {
+        const fw = levelData.fakeWin;
+        ctx.font = '24px sans-serif';
+        ctx.fillText('🏆', fw.x, fw.y + 20);
+        ctx.fillStyle = '#ffe082';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillText('YOU WIN!', fw.x - 2, fw.y + 30);
+      }
+
+      // Render Doors
       if (levelData.door) {
         const d = levelData.door;
         ctx.fillStyle = '#00e676';
         ctx.fillRect(d.x, d.y, d.w, d.h);
         ctx.fillStyle = '#000';
         ctx.font = '14px sans-serif';
-        ctx.fillText('🚪', d.x + 4, d.y + 26);
+        ctx.fillText('🚪', d.x + 5, d.y + 26);
       }
 
       if (levelData.fakeDoor) {
@@ -2508,7 +3316,7 @@ function setupOfficeRoastMission() {
         ctx.fillRect(d.x, d.y, d.w, d.h);
         ctx.fillStyle = '#fff';
         ctx.font = '14px sans-serif';
-        ctx.fillText('🚪', d.x + 4, d.y + 26);
+        ctx.fillText('🚪', d.x + 5, d.y + 26);
       }
 
       if (levelData.realDoor) {
@@ -2517,29 +3325,41 @@ function setupOfficeRoastMission() {
         ctx.fillRect(d.x, d.y, d.w, d.h);
         ctx.fillStyle = '#000';
         ctx.font = '14px sans-serif';
-        ctx.fillText('🚪', d.x + 4, d.y + 26);
+        ctx.fillText('🚪', d.x + 5, d.y + 26);
       }
 
-      if (levelData.fakeCheckpoint) {
-        const fc = levelData.fakeCheckpoint;
-        ctx.font = '20px sans-serif';
-        ctx.fillText('🚩', fc.x, fc.y + 20);
-      }
-
-      // Render Target (Level 3)
+      // Render Employee Target (Level 3)
       if (levelData.target) {
         const tgt = levelData.target;
         ctx.font = '24px sans-serif';
-        ctx.fillText('🎯', tgt.x, tgt.y + 20);
+        ctx.fillText('👔', tgt.x, tgt.y + 20);
 
         // Speech Bubble
         ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
         ctx.beginPath();
-        ctx.roundRect(tgt.x - 40, tgt.y - 18, 110, 16, 8);
+        drawRoundRect(tgt.x - 45, tgt.y - 18, 125, 16, 8);
         ctx.fill();
         ctx.fillStyle = '#000';
         ctx.font = 'bold 8px sans-serif';
-        ctx.fillText(tgt.speech, tgt.x - 34, tgt.y - 7);
+        ctx.fillText(tgt.speech, tgt.x - 40, tgt.y - 7);
+
+        // "EMPLOYEE" label badge
+        ctx.fillStyle = '#ff3366';
+        ctx.font = 'bold 8px monospace';
+        ctx.fillText('EMPLOYEE', tgt.x - 6, tgt.y + 28);
+
+        // Prominent "CATCH THEM." Objective Indicator
+        ctx.save();
+        ctx.fillStyle = '#ff3366';
+        ctx.font = 'bold 15px "Space Grotesk", sans-serif';
+        ctx.textAlign = 'center';
+        const pulse = 1 + Math.sin(Date.now() * 0.007) * 0.08;
+        ctx.translate(585, 48);
+        ctx.scale(pulse, pulse);
+        ctx.shadowColor = 'rgba(255, 51, 102, 0.8)';
+        ctx.shadowBlur = 12;
+        ctx.fillText('🏃 CATCH THEM. 🏃', 0, 0);
+        ctx.restore();
       }
 
       // Render Player Character
@@ -2613,12 +3433,17 @@ function setupOfficeRoastMission() {
         ctx.globalAlpha = ft.alpha;
         ctx.font = 'bold 12px "Space Grotesk", sans-serif';
         ctx.fillText(ft.text, ft.x, ft.y);
-      ctx.globalAlpha = 1.0;
+        ctx.globalAlpha = 1.0;
+      }
+      } catch (err) {
+        console.error('Troll game loop error:', err);
+      }
     }
 
+    // Start the Game Loop immediately!
+    if (gameAnimId) cancelAnimationFrame(gameAnimId);
     gameAnimId = requestAnimationFrame(gameLoop);
   }
-}
 }
 
 // ==========================================================
@@ -2720,22 +3545,28 @@ window.handlePasswordSubmit = function(e) {
 
   const enteredPassword = input.value.trim();
 
-  // Required password: "password"
-  if (enteredPassword.toLowerCase() === 'password') {
+  // Required password: strictly "PASSWORD" (case-sensitive)
+  if (enteredPassword === 'PASSWORD') {
     if (errorMsg) errorMsg.classList.add('hidden');
     if (inputWrap) inputWrap.classList.remove('error');
     if (card) card.classList.add('success');
     if (gateIcon) gateIcon.innerText = '🔓';
 
-    showSassyToast('Access Granted! Welcome to Deba Deba.', 3200);
     playHeartbeat(110, 0.25, 0.6);
-    triggerHaptic([40, 60, 100]);
+    triggerHaptic([40, 60]);
 
-    setTimeout(() => {
-      gate.classList.add('unlocked');
-      startMusicOnUserGesture();
-      triggerZoom();
-    }, 400);
+    // Show Cumin & Coriander Warning Pop-up Modal before opening website
+    const corianderPopup = document.getElementById('coriander-popup');
+    const acceptBtn = document.getElementById('coriander-accept-btn');
+    if (corianderPopup) {
+      corianderPopup.classList.remove('hidden');
+      if (acceptBtn) {
+        setTimeout(() => acceptBtn.focus(), 120);
+      }
+    } else {
+      // Direct fallback if popup DOM is not found
+      window.handleAcceptWarning();
+    }
 
     return false;
   } else {
@@ -2743,7 +3574,7 @@ window.handlePasswordSubmit = function(e) {
     if (errorMsg) {
       errorMsg.classList.remove('hidden');
       if (errorText) {
-        errorText.innerHTML = "🔐 <b>Hint:</b> The password is… well, <b>the password.</b> You can type it and open. 😂";
+        errorText.innerHTML = "🔐 <b>Hint:</b> The password is… well, the password. You can type it and open. 😂";
       }
     }
     if (inputWrap) inputWrap.classList.add('error');
@@ -2760,44 +3591,63 @@ window.handlePasswordSubmit = function(e) {
   }
 };
 
+// ==========================================================
+// CUMIN & CORIANDER SURVIVAL ADVISORY CONFIRMATION
+// ==========================================================
+window.handleAcceptWarning = function(e) {
+  if (e) e.preventDefault();
+  const corianderPopup = document.getElementById('coriander-popup');
+  const gate = document.getElementById('password-gate');
+
+  if (corianderPopup) {
+    corianderPopup.classList.add('hidden');
+  }
+
+  const accessQuips = [
+    'Access Granted! Hide your cumin & coriander... you’ve entered the danger zone. 😭💀',
+    'Access Granted! Protect your spices and your sanity at all costs. 🌿💀',
+    'Entered the void! We take zero responsibility for lost coriander or lost brain cells.'
+  ];
+  showSassyToast(accessQuips[Math.floor(Math.random() * accessQuips.length)], 3800);
+  playAnimalSound('goat');
+  playHeartbeat(120, 0.25, 0.7);
+  triggerHaptic([40, 60, 120]);
+
+  if (gate) {
+    gate.classList.add('unlocked');
+  }
+  startMusicOnUserGesture();
+  triggerZoom();
+};
+
 function setupPasswordGate() {
   const input = document.getElementById('gate-password-input');
-  const eyeBtn = document.getElementById('toggle-password-vis');
-
-  if (eyeBtn && input) {
-    eyeBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const isPwd = input.type === 'password';
-      input.type = isPwd ? 'text' : 'password';
-      eyeBtn.innerText = isPwd ? '🙈' : '👁️';
-      input.focus();
-    });
-  }
 
   // Auto-focus input on page open
   if (input) {
     setTimeout(() => input.focus(), 250);
   }
+
+  // Allow Enter key to confirm Cumin & Coriander advisory when popup is active
+  window.addEventListener('keydown', (e) => {
+    const corianderPopup = document.getElementById('coriander-popup');
+    if (corianderPopup && !corianderPopup.classList.contains('hidden')) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        window.handleAcceptWarning();
+      }
+    }
+  });
 }
 
 // ==========================================================
-// ANTI-INSPECT & SCREENSHOT DEFENSE SHIELD
+// ANTI-INSPECT & DEFENSE SHIELD (Screenshots Enabled)
 // ==========================================================
 function setupAntiInspectAndScreenshotProtection() {
   const shield = document.getElementById('screenshot-shield');
-
-  function triggerScreenshotAlert() {
-    showSassyToast('📸 Screenshots are restricted on Deba Deba! Eyes on the screen.', 2800);
-    triggerHaptic([60, 40, 100]);
-    if (shield) {
-      shield.classList.remove('hidden');
-      setTimeout(() => shield.classList.add('hidden'), 1200);
-    }
-    // Wipe clipboard to prevent pasting screenshot
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText('🚫 Screenshots are disabled on Deba Deba! Keep your eyes on the screen. - Deba Deba Noir').catch(() => {});
-    }
+  if (shield) {
+    shield.classList.add('hidden');
+    shield.style.display = 'none';
   }
 
   function spawnRightClickDengey(x, y) {
@@ -2810,100 +3660,13 @@ function setupAntiInspectAndScreenshotProtection() {
     setTimeout(() => el.remove(), 1250);
   }
 
-  // 1. Right-Click: Display "Dengey....."
+  // Right-Click feedback
   window.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
     spawnRightClickDengey(e.clientX, e.clientY);
-    showSassyToast('Dengey.....', 2200);
-    playAnimalSound('duck');
-    triggerHaptic(40);
-    return false;
   }, true);
 
-  // 2. Disable DevTools and Screenshot Shortcuts
-  window.addEventListener('keydown', (e) => {
-    const key = e.key ? e.key.toLowerCase() : '';
-    const code = e.keyCode || e.which;
-
-    // F12
-    if (e.key === 'F12' || code === 123) {
-      e.preventDefault();
-      e.stopPropagation();
-      showSassyToast('🔒 Developer tools are locked!', 2400);
-      return false;
-    }
-
-    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Inspect / Console)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
-      e.preventDefault();
-      e.stopPropagation();
-      showSassyToast('🚫 Inspect Element is disabled!', 2400);
-      return false;
-    }
-
-    // Ctrl+U (View Source)
-    if ((e.ctrlKey || e.metaKey) && key === 'u') {
-      e.preventDefault();
-      e.stopPropagation();
-      showSassyToast('🚫 Source code viewing is disabled!', 2400);
-      return false;
-    }
-
-    // Ctrl+S (Save Page)
-    if ((e.ctrlKey || e.metaKey) && key === 's') {
-      e.preventDefault();
-      e.stopPropagation();
-      showSassyToast('🚫 Saving page is disabled!', 2400);
-      return false;
-    }
-
-    // Ctrl+P (Print / PDF)
-    if ((e.ctrlKey || e.metaKey) && key === 'p') {
-      e.preventDefault();
-      e.stopPropagation();
-      showSassyToast('🚫 Printing is disabled!', 2400);
-      return false;
-    }
-
-    // PrintScreen
-    if (e.key === 'PrintScreen' || code === 44) {
-      e.preventDefault();
-      e.stopPropagation();
-      triggerScreenshotAlert();
-      return false;
-    }
-  }, true);
-
-  // 3. PrintScreen keyup fallback
-  window.addEventListener('keyup', (e) => {
-    if (e.key === 'PrintScreen' || e.keyCode === 44) {
-      triggerScreenshotAlert();
-    }
-  }, true);
-
-  // 4. Windows Snipping Tool / OS Screenshot Shield (triggers on window blur during capture)
-  window.addEventListener('blur', () => {
-    if (shield) {
-      shield.classList.remove('hidden');
-    }
-  });
-
-  window.addEventListener('focus', () => {
-    if (shield) {
-      shield.classList.add('hidden');
-    }
-  });
-
-  // 5. Disable dragging images
-  window.addEventListener('dragstart', (e) => {
-    e.preventDefault();
-    return false;
-  });
-
-  // 6. Sarcastic Console Warning for DevTools
-  console.log('%cSTOP! 🛑', 'color: #ff3366; font-size: 45px; font-weight: 900;');
-  console.log('%cThis is a restricted zone. Developer tools and inspections are disabled on Deba Deba Noir.', 'font-size: 15px; color: #fff; font-weight: bold;');
+  // Console notice
+  console.log('%cdebadeba IT solutions', 'color: #00f0ff; font-size: 24px; font-weight: 800;');
 }
 
 // Start Deba Deba Engine
