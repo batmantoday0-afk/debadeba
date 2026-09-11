@@ -25,6 +25,17 @@ const CAM_BASE_Z = 16;
 let starsMesh = null;
 let starsMaterial = null;
 
+// Interactive 3D Mouse Parallax & Dynamic Light Tracking
+let mouseNormX = 0;
+let mouseNormY = 0;
+let camLerpX = 0;
+let camLerpY = 0;
+
+// Kinetic 3D Floating Geometries (Satellites & Ambient Sculptures)
+let floatingGeometriesGroup = null;
+let floatingArtifacts = [];
+let floatingArtifactMaterial = null;
+
 // Lighting References for Dynamic Mood Interpolation
 let ambientLight, leftSoftbox, rightSoftbox, topRim, moodAuraLight;
 
@@ -524,6 +535,9 @@ function init() {
   // Speed Dust
   createSpeedDust();
 
+  // Kinetic 3D Floating Geometries
+  createFloating3DGeometries();
+
   // Root container for zoom and physics
   textContainer = new THREE.Group();
   textContainer.position.set(0, 0, START_Z);
@@ -558,6 +572,9 @@ function init() {
 
   // Sassy Whispers Toast Engine & Idle Watcher
   setupSassyEngine();
+
+  // Interactive 3D Card & UI Tilt Engine
+  setup3DTilt();
 
   // Start Animation Loop
   animStartTime = performance.now();
@@ -594,26 +611,89 @@ function setupStudioLighting() {
 // SPEED DUST PARTICLES
 // ==========================================================
 function createSpeedDust() {
-  const count = 400;
+  const count = 650;
   const geo = new THREE.BufferGeometry();
   const pos = new Float32Array(count * 3);
 
   for (let i = 0; i < count * 3; i += 3) {
-    pos[i] = (Math.random() - 0.5) * 45;
-    pos[i + 1] = (Math.random() - 0.5) * 30;
-    pos[i + 2] = -Math.random() * 650;
+    pos[i] = (Math.random() - 0.5) * 55;
+    pos[i + 1] = (Math.random() - 0.5) * 36;
+    pos[i + 2] = -Math.random() * 680 + 20;
   }
 
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   starsMaterial = new THREE.PointsMaterial({
     color: THEMES[currentThemeKey].starColor,
-    size: 0.16,
+    size: 0.18,
     transparent: true,
-    opacity: 0.45,
+    opacity: 0.55,
   });
 
   starsMesh = new THREE.Points(geo, starsMaterial);
   scene.add(starsMesh);
+}
+
+// ==========================================================
+// KINETIC 3D FLOATING GEOMETRIC SCULPTURES
+// ==========================================================
+function createFloating3DGeometries() {
+  floatingGeometriesGroup = new THREE.Group();
+  scene.add(floatingGeometriesGroup);
+
+  const t = THEMES[currentThemeKey];
+  floatingArtifactMaterial = new THREE.MeshPhysicalMaterial({
+    color: t.textMat.color,
+    emissive: t.textMat.emissive,
+    roughness: t.textMat.roughness,
+    metalness: t.textMat.metalness,
+    clearcoat: t.textMat.clearcoat,
+    clearcoatRoughness: 0.05,
+    reflectivity: 1.0,
+  });
+
+  const geoTypes = [
+    new THREE.TorusGeometry(0.7, 0.22, 16, 36),
+    new THREE.IcosahedronGeometry(0.85, 0),
+    new THREE.OctahedronGeometry(0.9, 0),
+    new THREE.DodecahedronGeometry(0.75, 0),
+    new THREE.TorusKnotGeometry(0.52, 0.16, 48, 12),
+    new THREE.TetrahedronGeometry(0.8, 0),
+    new THREE.TorusGeometry(0.95, 0.08, 16, 40),
+    new THREE.ConeGeometry(0.65, 1.2, 5),
+    new THREE.BoxGeometry(0.85, 0.85, 0.85),
+    new THREE.CylinderGeometry(0.65, 0.65, 0.2, 24)
+  ];
+
+  const count = 14;
+  for (let i = 0; i < count; i++) {
+    const geo = geoTypes[i % geoTypes.length];
+    const mesh = new THREE.Mesh(geo, floatingArtifactMaterial);
+
+    const angle = (i / count) * Math.PI * 2 + (Math.random() * 0.3);
+    const radius = 8.5 + (i % 3) * 3.5;
+    const x = Math.cos(angle) * radius * 1.35;
+    const y = Math.sin(angle) * (radius * 0.75) + (Math.random() - 0.5) * 3.5;
+    const z = -28 + (i * 2.6) + (Math.random() - 0.5) * 4;
+
+    mesh.position.set(x, y, z);
+    const sc = 0.52 + Math.random() * 0.6;
+    mesh.scale.set(sc, sc, sc);
+
+    mesh.userData = {
+      baseX: x,
+      baseY: y,
+      baseZ: z,
+      rotSpeedX: (Math.random() - 0.5) * 0.016,
+      rotSpeedY: (Math.random() - 0.5) * 0.022,
+      rotSpeedZ: (Math.random() - 0.5) * 0.014,
+      bobSpeed: 0.9 + Math.random() * 1.3,
+      bobAmp: 0.3 + Math.random() * 0.4,
+      bobOffset: Math.random() * Math.PI * 2,
+    };
+
+    floatingArtifacts.push(mesh);
+    floatingGeometriesGroup.add(mesh);
+  }
 }
 
 // ==========================================================
@@ -630,19 +710,20 @@ function loadTypography() {
       roughness: t.textMat.roughness,
       metalness: t.textMat.metalness,
       clearcoat: t.textMat.clearcoat,
-      clearcoatRoughness: 0.05,
+      clearcoatRoughness: 0.04,
+      reflectivity: 1.0,
     });
 
     const textOptions = {
       font: font,
       size: 1.8,
-      depth: 0.28,
+      depth: 0.36,
       curveSegments: 32,
       bevelEnabled: true,
-      bevelThickness: 0.02,
-      bevelSize: 0.015,
+      bevelThickness: 0.035,
+      bevelSize: 0.02,
       bevelOffset: 0,
-      bevelSegments: 6,
+      bevelSegments: 8,
     };
 
     wordGroup = new THREE.Group();
@@ -762,6 +843,15 @@ function applyTheme(themeKey, notify = true) {
     textMaterial.roughness = t.textMat.roughness;
     textMaterial.metalness = t.textMat.metalness;
     textMaterial.clearcoat = t.textMat.clearcoat;
+  }
+
+  // 3D Floating Geometries Material
+  if (floatingArtifactMaterial) {
+    floatingArtifactMaterial.color.setHex(t.textMat.color);
+    floatingArtifactMaterial.emissive.setHex(t.textMat.emissive);
+    floatingArtifactMaterial.roughness = t.textMat.roughness;
+    floatingArtifactMaterial.metalness = t.textMat.metalness;
+    floatingArtifactMaterial.clearcoat = t.textMat.clearcoat;
   }
 
   // Speed Dust Particles
@@ -1392,11 +1482,122 @@ function renderFluidCanvas() {
 }
 
 // ==========================================================
+// UNIVERSAL 3D CARD & UI TILT ENGINE
+// ==========================================================
+function setup3DTilt() {
+  const tiltSelectors = [
+    '.credits-card',
+    '.team-item',
+    '.founder-box',
+    '.control-btn',
+    '.coriander-card',
+    '.photo-card-glass',
+    '.secret-unlocked-card',
+    '.sarcastic-showcase-box',
+    '.sassy-banner',
+    '.troll-canvas-container',
+    '.hacker-terminal'
+  ];
+
+  function applyTilt(el) {
+    if (!el || el.dataset.tiltInit) return;
+    el.dataset.tiltInit = 'true';
+
+    let rect = null;
+    let isHovering = false;
+
+    // Add 3D glare overlay element if not present
+    let glare = el.querySelector('.card-3d-glare');
+    if (!glare && !el.classList.contains('control-btn') && !el.classList.contains('team-item') && !el.classList.contains('troll-canvas-container')) {
+      glare = document.createElement('div');
+      glare.className = 'card-3d-glare';
+      el.appendChild(glare);
+    }
+
+    el.addEventListener('pointerenter', () => {
+      rect = el.getBoundingClientRect();
+      isHovering = true;
+      el.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s ease';
+    });
+
+    el.addEventListener('pointermove', (e) => {
+      if (!isHovering) return;
+      if (!rect) rect = el.getBoundingClientRect();
+
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const px = Math.max(-1, Math.min(1, (x / rect.width) * 2 - 1));
+      const py = Math.max(-1, Math.min(1, (y / rect.height) * 2 - 1));
+
+      const isBtn = el.classList.contains('control-btn');
+      const isCard = el.classList.contains('credits-card') || el.classList.contains('mission-container') || el.classList.contains('secret-unlocked-card');
+      const maxRot = isBtn ? 15 : (isCard ? 8 : 12);
+
+      const rotX = -py * maxRot;
+      const rotY = px * maxRot;
+      const zElev = isBtn ? 8 : 14;
+
+      el.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateZ(${zElev}px)`;
+
+      if (glare) {
+        glare.style.opacity = '0.35';
+        glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.28) 0%, transparent 68%)`;
+      }
+    });
+
+    el.addEventListener('pointerleave', () => {
+      isHovering = false;
+      el.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease';
+      el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+      if (glare) {
+        glare.style.opacity = '0';
+      }
+    });
+  }
+
+  function refreshTiltElements() {
+    tiltSelectors.forEach((sel) => {
+      document.querySelectorAll(sel).forEach((el) => applyTilt(el));
+    });
+  }
+
+  refreshTiltElements();
+
+  const observer = new MutationObserver(() => {
+    refreshTiltElements();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+// ==========================================================
 // TOUCH & GESTURE INTERACTIONS
 // ==========================================================
 function setupInteractions() {
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // 3D Mouse Parallax & Dynamic Light Tracking
+  window.addEventListener('pointermove', (e) => {
+    mouseNormX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseNormY = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      mouseNormX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+      mouseNormY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+    }
+  }, { passive: true });
+
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', (e) => {
+      if (e.gamma !== null && e.beta !== null) {
+        mouseNormX = Math.max(-1, Math.min(1, e.gamma / 25));
+        mouseNormY = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
+      }
+    }, { passive: true });
+  }
 
   let singleTapTimer = null;
   let holdStartTimer = null;
@@ -1828,6 +2029,10 @@ function animate(currentTime) {
     } else if (hasArrived && !hasCracked) {
       const timeSinceArrival = (currentTime - arrivalTime) / 1000;
 
+      // Smooth 3D camera parallax tracking with inertia
+      camLerpX += (mouseNormX - camLerpX) * 0.045;
+      camLerpY += (mouseNormY - camLerpY) * 0.045;
+
       if (timeSinceArrival < 0.28) {
         const shakeDecay = 1 - timeSinceArrival / 0.28;
         camera.position.z = CAM_BASE_Z + Math.sin(timeSinceArrival * 45) * 0.1 * shakeDecay;
@@ -1835,17 +2040,59 @@ function animate(currentTime) {
         camera.position.z = CAM_BASE_Z;
       }
 
-      // Sultry rhythmic breathing & gentle floating oscillation
-      const t = currentTime * 0.001;
-      textContainer.position.y = Math.sin(t * 1.5) * 0.06;
-      textContainer.rotation.y = Math.cos(t * 1.0) * 0.015;
+      camera.position.x = camLerpX * 2.4;
+      camera.position.y = camLerpY * 1.6;
+      camera.lookAt(0, 0, 0);
 
-      // Subtle dynamic aura pulse
+      // Sultry rhythmic breathing & gentle floating oscillation with 3D perspective tilt
+      const t = currentTime * 0.001;
+      textContainer.position.y = Math.sin(t * 1.5) * 0.08 + (camLerpY * 0.35);
+      textContainer.position.x = (camLerpX * 0.35);
+      textContainer.rotation.y = Math.cos(t * 1.0) * 0.02 + (camLerpX * 0.14);
+      textContainer.rotation.x = -camLerpY * 0.10;
+
+      // Dynamic 3D Point Light tracks cursor in 3D world space
       if (moodAuraLight) {
         const theme = THEMES[currentThemeKey];
+        moodAuraLight.position.x = camLerpX * 11;
+        moodAuraLight.position.y = camLerpY * 7;
+        moodAuraLight.position.z = 4.5 + Math.sin(t * 2.0) * 1.2;
         moodAuraLight.intensity = theme.auraIntensity + Math.sin(t * 2.5) * 0.4;
       }
     }
+  }
+
+  // Continuous 3D forward starfield flight
+  if (starsMesh && hasArrived && !hasCracked) {
+    const pos = starsMesh.geometry.attributes.position.array;
+    for (let i = 2; i < pos.length; i += 3) {
+      pos[i] += 0.38;
+      if (pos[i] > 20) {
+        pos[i] = -650;
+      }
+    }
+    starsMesh.geometry.attributes.position.needsUpdate = true;
+    starsMesh.rotation.z += 0.0003;
+  }
+
+  // Animate Kinetic 3D Floating Sculptures
+  if (floatingArtifacts.length > 0) {
+    const tSec = currentTime * 0.001;
+    floatingArtifacts.forEach((m) => {
+      const u = m.userData;
+      m.rotation.x += u.rotSpeedX;
+      m.rotation.y += u.rotSpeedY;
+      m.rotation.z += u.rotSpeedZ;
+
+      // 3D Harmonic floating bobbing
+      m.position.y = u.baseY + Math.sin(tSec * u.bobSpeed + u.bobOffset) * u.bobAmp;
+      m.position.x = u.baseX + Math.cos(tSec * u.bobSpeed * 0.7 + u.bobOffset) * (u.bobAmp * 0.5);
+
+      // Depth-scaled 3D parallax reaction to cursor
+      const depthFactor = (m.position.z + 35) / 35;
+      m.position.x += camLerpX * 0.75 * depthFactor;
+      m.position.y += camLerpY * 0.55 * depthFactor;
+    });
   }
 
   // Update flying shatter shards
